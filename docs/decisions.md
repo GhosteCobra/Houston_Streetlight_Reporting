@@ -12,3 +12,7 @@ Keep decisions short: date, owner, context, choice, tradeoff, affected contracts
 | D-006 | Proposed defaults | 10 MB photos; 25 m / 7 day duplicate heuristic | Validate with fixtures and real devices |
 
 No dependency versions, credentials, access grants, or live deployment are established by these decisions.
+
+## Agent framework adoption
+
+The user requested adoption of skills-main.zip and delivery to main. Root AGENTS.md adapts its isolate/build/prove/ship workflow to this team. Normal work keeps the develop integration branch; explicit main delivery remains task-specific. The unchanged source and checksums live in .agents/. External review and capture tooling are not installed by this change.

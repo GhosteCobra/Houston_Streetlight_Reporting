@@ -4,7 +4,7 @@ This is the implementation framework, not a runnable application. All tasks begi
 
 ## Start here
 
-1. Read [requirements](requirements.md) and [architecture](architecture.md).
+1. Coding agents read [AGENTS.md](../AGENTS.md) and the [startup guide](agent-workflow.md) first. Read [requirements](requirements.md) and [architecture](architecture.md).
 2. Claim a role in the [team directory](roles/README.md).
 3. Review the [data contract](data-contract.md) and [API contract](api-contract.md) with dependent owners.
 4. Pick the first ready task in the [backlog](backlog.md).

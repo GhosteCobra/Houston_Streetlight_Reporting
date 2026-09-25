@@ -1,5 +1,7 @@
 # Contributing
 
+Coding agents must first read [AGENTS.md](AGENTS.md) and the relevant bundled skills. Use a separate task worktree and record file scope, dependencies, and evidence. See the [startup guide](docs/agent-workflow.md).
+
 Start with the [team docs](docs/README.md), your [role guide](docs/roles/README.md), and an issue from the [backlog](docs/backlog.md). This is a documentation scaffold; application checks become mandatory when implemented.
 
 ## Work cycle
@@ -20,6 +22,6 @@ The [data](docs/data-contract.md) and [API](docs/api-contract.md) documents are 
 
 ## Definition of done
 
-Acceptance criteria met; error/fallback paths checked; no secrets; another teammate can reproduce; affected documentation updated; review completed; configured CI checks pass. For documentation-only changes, validate Markdown links, examples, and whitespace rather than claiming runtime tests.
+Acceptance criteria met; error/fallback paths checked; no secrets; another teammate can reproduce; affected documentation updated; review completed; configured CI checks pass. For documentation-only changes, run `python3 scripts/check_framework.py` and `git diff --check`. Do not claim runtime tests. Follow AGENTS.md for explicit main-delivery requests and optional reviewer availability.
 
 See [.github/OWNERSHIP.md](.github/OWNERSHIP.md) for reviewer routing. This scaffold does not configure branch protection or create issues, accounts, or CI runs.

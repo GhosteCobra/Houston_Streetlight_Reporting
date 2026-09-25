@@ -26,6 +26,10 @@ Person 3 owns one report draft in the page/controller. Camera and map components
 - `PoleDataSource`: returns normalized poles from synthetic fixtures first and an authorized ArcGIS service later.
 - `ProviderAdapter`: prepares a handoff summary; returns `not_sent` in demo mode. Never silently fall back to a live provider.
 
+## Agent implementation boundaries
+
+Apply the bundled code-structure skill under [AGENTS.md](../AGENTS.md). Route Handlers/actions own authentication, domain decisions and transaction orchestration. Server-only repositories/adapters perform explicit database access; reusable service helpers receive inputs and return structured results without hidden product-state changes. Extract repeated mechanics only when they have real callers. This refines the ReportService label above rather than adding a separate backend application.
+
 ## State and failure handling
 
 Suggested UI states: capture → locating → review → uploading → saving → confirmed, with retryable errors returning to the draft. Geocoding failure must not prevent manually confirmed coordinates. A report save must reference only a validated upload belonging to the current session. Track abandoned uploads for cleanup. Persist idempotency results transactionally with report creation.

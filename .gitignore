@@ -1,0 +1,16 @@
+# Local secrets, generated application files, and agent workspaces
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+.vercel/
+.worktrees/
+.artifacts/
+__pycache__/
+*.pyc
+.DS_Store

@@ -1,5 +1,7 @@
 # Five-person team
 
+All roles follow [AGENTS.md](../../AGENTS.md) when using a coding agent. Read the relevant bundled skills before work and claim a distinct worktree, branch, and file scope.
+
 Names and GitHub handles are unassigned. Fill them in together; do not infer assignments from commit authors.
 
 | Role | Guide | Name / handle | Primary reviewer |

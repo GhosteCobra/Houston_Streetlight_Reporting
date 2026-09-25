@@ -2,6 +2,11 @@
 
 Explain the before/after behavior and link the issue.
 
+## Agent workflow
+
+Role/owner, task branch/worktree, base revision, loaded skills:
+Overlap check and coordinated shared files:
+
 ## Scope and dependencies
 
 Affected modules/roles:
@@ -20,6 +25,13 @@ For UI changes, include sample-data screenshots or a brief recording when useful
 - [ ] Contracts, fixtures, and docs updated as needed.
 - [ ] Migration/deployment impact and rollback documented if applicable.
 - [ ] Requested another teammate’s review.
+
+## Evidence and review
+
+Before/after captures for visible changes, or diff/test/probe output for other changes:
+Revision and environment tested:
+Teammate review status:
+Greptile status if configured; otherwise state not run:
 
 ## Limitations
 

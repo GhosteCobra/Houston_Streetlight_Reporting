@@ -1,6 +1,6 @@
 # Test strategy and acceptance matrix
 
-**Coordinator:** Person 5. Each role owns its feature tests. No tests or runners exist yet.
+**Coordinator:** Person 5. Each role owns its feature tests. No application tests or runners exist yet. The documentation checker is available as `python3 scripts/check_framework.py`.
 
 Use Vitest for schema, matching, and idempotency logic; integration tests for database/storage access; Playwright for browser reporting flow. Real-device camera testing complements simulated browser input.
 
@@ -27,3 +27,7 @@ Use Vitest for schema, matching, and idempotency logic; integration tests for da
 Date, commit, tester, device/browser, fixture, steps, expected result, actual result, pass/fail, and issue link. Mark unrun scenarios as not tested. Use synthetic photos/coordinates only.
 
 Place focused logic tests in unit/, service/policy tests in integration/, and browser flow tests in e2e/. Never test against real resident reports or send live utility submissions.
+
+## Agent evidence
+
+Follow [AGENTS.md](../AGENTS.md) and load the evidence-driven-testing skill for verification. Capture a real before state for reproducible bugs, then verify the changed behavior. Record exact revision/environment and untested cases. Docs use checker output and diff; UI uses actual captures. Store raw evidence in ignored .artifacts/ and share only to an authorized destination.

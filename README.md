@@ -6,6 +6,8 @@ A mobile-first, camera-first web app planned as a hackathon project to help resi
 
 ## Start building
 
+Coding agents must read [AGENTS.md](AGENTS.md) first. The [agent startup guide](docs/agent-workflow.md) explains the team process, and the [bundled skills](.agents/README.md) preserve the supplied skills-main.zip with project-specific overrides.
+
 Use the [team documentation index](docs/README.md) to navigate the framework. Start with your [role guide](docs/roles/README.md), then claim a task from the [implementation backlog](docs/backlog.md).
 
 | Guide | What it covers |
@@ -359,7 +361,7 @@ Branching reduces overlapping work; it does not eliminate conflicts. Discuss sha
 
 ### Working with coding agents
 
-Give each agent a specific issue, branch, acceptance criteria, and file scope. Use separate checkouts/worktrees when agents work concurrently. Share the agreed API/schema and coordinate edits to common files. Review agent-generated code and test it through the same pull request process as human-authored code.
+Give each agent a specific issue, branch, acceptance criteria, and file scope. Use a separate task worktree and branch for each agent, following [AGENTS.md](AGENTS.md). Share the agreed API/schema and coordinate edits to common files. Review agent-generated code and test it through the same pull request process as human-authored code.
 
 ## Daily team routine
 
@@ -375,6 +377,9 @@ These folders now exist with Markdown guides. Entries described inside them as f
 Houston_Streetlight_Reporting/
 ├── README.md
 ├── CONTRIBUTING.md
+├── AGENTS.md
+├── .agents/                    # Supplied skills and provenance
+├── scripts/                    # Framework documentation checker
 ├── docs/
 │   ├── README.md
 │   ├── roles/                 # Five role guides and assignment directory
@@ -414,7 +419,7 @@ Houston_Streetlight_Reporting/
     └── workflows/             # CI plan only; no executable workflow yet
 ```
 
-The recommended stack is Next.js/TypeScript, ArcGIS, Supabase, and Vercel, using npm. Bootstrap work will add package files, a lockfile, .gitignore, placeholder .env.example, code, sample data, and verified commands. Actual CODEOWNERS entries require confirmed GitHub handles; the ownership guide currently records roles. No packages, accounts, services, branch protection, or deployment are configured by this documentation scaffold.
+The recommended stack is Next.js/TypeScript, ArcGIS, Supabase, and Vercel, using npm. The repository now includes .gitignore and a documentation checker. Bootstrap work will add package files, a lockfile, placeholder .env.example, code, sample data, and application commands. Actual CODEOWNERS entries require confirmed GitHub handles; the ownership guide currently records roles. No packages, accounts, services, branch protection, or deployment are configured by this documentation scaffold.
 
 ## Data and provider integration
 

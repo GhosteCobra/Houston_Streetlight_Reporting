@@ -1,0 +1,2 @@
+# Preserve the supplied bundle verbatim, including original whitespace and line endings.
+.agents/skills/** -text -whitespace

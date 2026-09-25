@@ -2,6 +2,10 @@
 
 **Assignment:** TBD. **Status:** planned.
 
+## Agent startup
+
+Read [AGENTS.md](../../AGENTS.md), load the applicable bundled skills, and follow the [startup/handoff guide](../agent-workflow.md). Claim your task, file scope, branch/worktree, dependencies, and reviewer before editing.
+
 ## Scope
 
 Primary paths: `src/components/map/`, `src/lib/arcgis/`, `data/`. Consult [ownership](../../.github/OWNERSHIP.md) for shared files.
