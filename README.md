@@ -2,7 +2,23 @@
 
 A mobile-first, camera-first web app planned as a hackathon project to help residents report streetlight problems in Houston, Galveston, and the surrounding area safely and accurately.
 
-**Status: planning and documentation.** This repository currently contains the project README. The application, sample dataset, tests, CI, and deployment described below are planned work; there is no runnable application yet.
+**Status: planning and documentation.** This repository contains the project README, five role guides, implementation-folder guides, shared contracts, and collaboration templates. Application code, sample datasets, executable tests, CI, and deployment remain planned; there is no runnable application yet.
+
+## Start building
+
+Use the [team documentation index](docs/README.md) to navigate the framework. Start with your [role guide](docs/roles/README.md), then claim a task from the [implementation backlog](docs/backlog.md).
+
+| Guide | What it covers |
+| --- | --- |
+| [Requirements](docs/requirements.md) | MVP behavior and scope boundaries |
+| [Architecture](docs/architecture.md) | Module responsibilities and handoffs |
+| [Data contract](docs/data-contract.md) / [API contract](docs/api-contract.md) | Proposed shared fields, endpoints, errors, and access rules |
+| [Setup](docs/setup.md) | Application bootstrap and configuration checklist |
+| [Contributing](CONTRIBUTING.md) | Issues, branches, review, and completion criteria |
+| [Test plan](tests/README.md) | Success, fallback, retry, and access-control scenarios |
+| [Deployment](docs/deployment.md) / [Demo](docs/demo.md) | Release checks and presentation flow |
+
+Every implementation folder contains a README with its purpose, owner, planned files, and working rules. Proposed defaults in the contracts are a starting point for team review, not implemented behavior.
 
 ## Why we are building this
 
@@ -351,39 +367,54 @@ At the start of each session, share what was completed, what is next, and what i
 
 At the end of each session, run the combined application from a clean checkout once it exists, exercise the main reporting flow, record bugs as issues, and identify the next stable demo checkpoint.
 
-## Proposed repository layout
+## Repository framework
 
-Only this README exists at bootstrap. Create the following structure as implementation begins:
+These folders now exist with Markdown guides. Entries described inside them as future code, fixtures, migrations, or CI are still pending.
 
 ```text
 Houston_Streetlight_Reporting/
+├── README.md
+├── CONTRIBUTING.md
+├── docs/
+│   ├── README.md
+│   ├── roles/                 # Five role guides and assignment directory
+│   ├── requirements.md
+│   ├── architecture.md
+│   ├── data-contract.md
+│   ├── api-contract.md
+│   ├── backlog.md
+│   ├── setup.md
+│   ├── provider-research.md
+│   ├── decisions.md
+│   ├── deployment.md
+│   └── demo.md
 ├── src/
 │   ├── app/
-│   │   ├── api/              # Report/upload Route Handlers (Person 4)
-│   │   └── report/           # Capture, review, confirmation (Persons 3 and 5)
+│   │   ├── api/               # Person 4
+│   │   └── report/            # Person 3, integrating Person 5's camera
 │   ├── components/
-│   │   ├── map/             # ArcGIS integration (Person 2)
-│   │   └── camera/          # Capture and photo preview (Person 5)
+│   │   ├── map/               # Person 2
+│   │   ├── camera/            # Person 5
+│   │   └── report/            # Person 3
 │   └── lib/
-│       ├── schemas/         # Shared Zod contracts
-│       ├── server/          # Server-only storage/database/provider logic
-│       └── arcgis/          # Map data adapters
+│       ├── schemas/           # Shared contracts, coordinated by Person 4
+│       ├── server/            # Person 4
+│       └── arcgis/            # Person 2
 ├── supabase/
 │   └── migrations/
 ├── data/
-│   └── streetlights.sample.json
 ├── tests/
-├── docs/
-├── .github/
-│   └── workflows/
-├── .env.example
-├── .gitignore
-├── CONTRIBUTING.md
-├── CODEOWNERS
-└── README.md
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+└── .github/
+    ├── OWNERSHIP.md
+    ├── ISSUE_TEMPLATE/
+    ├── pull_request_template.md
+    └── workflows/             # CI plan only; no executable workflow yet
 ```
 
-The recommended stack is Next.js/TypeScript, ArcGIS, Supabase, and Vercel, using npm. Exact dependency versions, environment variable names, and executable setup/test commands will be documented after scaffolding. No packages, accounts, services, or deployment are configured by this README update.
+The recommended stack is Next.js/TypeScript, ArcGIS, Supabase, and Vercel, using npm. Bootstrap work will add package files, a lockfile, .gitignore, placeholder .env.example, code, sample data, and verified commands. Actual CODEOWNERS entries require confirmed GitHub handles; the ownership guide currently records roles. No packages, accounts, services, branch protection, or deployment are configured by this documentation scaffold.
 
 ## Data and provider integration
 
