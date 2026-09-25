@@ -143,6 +143,8 @@ Deploy over HTTPS and request GPS only when the user begins a report. Geolocatio
 
 ## Five-person team and feature ownership
 
+Team member: Ayaan Syed.
+
 The planning conversation assigns responsibilities to Person 1–5 without naming all team members. Add names/GitHub handles when the team confirms assignments. Each person owns an area, but changes still need another teammate's review.
 
 ### Person 1 — Project Lead / Product Owner / CenterPoint Research
