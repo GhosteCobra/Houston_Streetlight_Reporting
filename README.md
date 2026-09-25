@@ -378,6 +378,7 @@ Houston_Streetlight_Reporting/
 ├── README.md
 ├── CONTRIBUTING.md
 ├── AGENTS.md
+├── .env.example                # Supabase URL and public key placeholders
 ├── .agents/                    # Supplied skills and provenance
 ├── scripts/                    # Framework documentation checker
 ├── docs/
@@ -419,7 +420,7 @@ Houston_Streetlight_Reporting/
     └── workflows/             # CI plan only; no executable workflow yet
 ```
 
-The recommended stack is Next.js/TypeScript, ArcGIS, Supabase, and Vercel, using npm. The repository now includes .gitignore and a documentation checker. Bootstrap work will add package files, a lockfile, placeholder .env.example, code, sample data, and application commands. Actual CODEOWNERS entries require confirmed GitHub handles; the ownership guide currently records roles. No packages, accounts, services, branch protection, or deployment are configured by this documentation scaffold.
+The recommended stack is Next.js/TypeScript, ArcGIS, Supabase, and Vercel, using npm. The repository includes [.env.example](.env.example), .gitignore, and a documentation checker. Follow the [Supabase setup instructions](docs/setup.md#supabase-environment-file) to create a local configuration. Bootstrap work will add package files, a lockfile, code, sample data, and application commands. Actual CODEOWNERS entries require confirmed GitHub handles; the ownership guide currently records roles. No packages, accounts, services, branch protection, or deployment are configured by this documentation scaffold.
 
 ## Data and provider integration
 
