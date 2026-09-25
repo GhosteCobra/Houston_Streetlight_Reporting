@@ -4,11 +4,11 @@
 
 ## Purpose
 
-Issue selection, field errors, duplicate warnings, report summary, and status presentation.
+Issue selection, field errors, report summary, and status presentation.
 
 ## Planned contents
 
-Future IssueSelector, ReportReview, DuplicateNotice, and Confirmation components.
+Future IssueSelector, ReportReview, and Confirmation components.
 
 ## Working rules
 

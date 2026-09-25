@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Report persistence, session checks, photo authorization, idempotency, duplicate matching, and provider handoff.
+Report persistence, session checks, photo authorization, idempotency, and provider handoff.
 
 ## Planned contents
 

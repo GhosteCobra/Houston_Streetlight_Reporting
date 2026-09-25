@@ -4,6 +4,23 @@ A mobile-first, camera-first web app planned as a hackathon project to help resi
 
 **Status: planning and documentation.** This repository contains the project README, five role guides, implementation-folder guides, shared contracts, and collaboration templates. Application code, sample datasets, executable tests, CI, and deployment remain planned; there is no runnable application yet.
 
+## Next steps: interactive map and pole locations
+
+Our next milestone is a working ArcGIS map with selectable streetlights and reliable pole-location data. The first version can use synthetic records while the team verifies a permitted live source.
+
+1. **Agree on the pole record.** Person 2 and Person 4 confirm a stable pole ID, WGS84 latitude/longitude, optional address, provider/source, and map condition using the [data contract](docs/data-contract.md).
+2. **Create a small sample dataset.** Person 2 adds clearly labeled DEMO poles with nearby candidates, missing addresses, and an unknown condition. Record provenance in [data/](data/README.md).
+3. **Bootstrap the web app.** Person 3 and Person 5 create the Next.js/TypeScript application, install compatible ArcGIS packages, and verify the initial page and build. Use the root [.env.example](.env.example) for Supabase configuration; restricted ArcGIS settings still need to be defined.
+4. **Build the map and pole picker.** Person 2 renders markers and an accessible list, shows each pole's ID/location, and lets the user select or correct a location. Load the map in a browser-only component and retain attribution.
+5. **Connect the selection to the report draft.** Person 3 receives the confirmed pole and coordinates; Person 4 validates the record. Handle unavailable GPS, no nearby pole, and map-service errors.
+6. **Verify the map before review.** Person 5 checks marker/list selection, coordinate order, mobile use, manual correction, and error states. Record evidence, then open a feature PR into develop once that integration branch exists.
+
+The milestone is complete when a teammate can open the app, view sample poles, select the same pole from a marker or list, and see its ID and confirmed coordinates in the report draft. Camera capture and report persistence can then build on that flow. See the [map role guide](docs/roles/02-map-data.md) and [backlog](docs/backlog.md).
+
+### Live data/export status
+
+The separate `codex/test-streetlight-export` branch remains unmerged. Its [test report](https://github.com/GhosteCobra/Houston_Streetlight_Reporting/blob/8e0ece1f6f70df1a510a8cfc5fd0dfbdaf20afe1/docs/streetlight-export-test-report.md) records a service-not-found response and three failed offline acceptance checks. Before live-data work proceeds, verify an authorized working layer, reject incomplete/malformed exports, and fix coordinate-column collisions. A synthetic map does not depend on that exporter passing.
+
 ## Start building
 
 Coding agents must read [AGENTS.md](AGENTS.md) first. The [agent startup guide](docs/agent-workflow.md) explains the team process, and the [bundled skills](.agents/README.md) preserve the supplied skills-main.zip with project-specific overrides.
@@ -26,7 +43,7 @@ Every implementation folder contains a README with its purpose, owner, planned f
 
 Someone who notices a broken streetlight may not know its pole number, exact address, or responsible utility. Our goal is to turn a location, photograph, and issue description into a structured report that the resident can review and use with the appropriate reporting provider.
 
-The prototype will combine a streetlight map, pole IDs linked to GPS coordinates, photo upload, issue selection, duplicate warnings, and report tracking. We will demonstrate the complete flow with sample data before pursuing an approved utility integration.
+The prototype will combine a streetlight map, pole IDs linked to GPS coordinates, photo upload, issue selection, and report tracking. We will demonstrate the complete flow with sample data before pursuing an approved utility integration.
 
 This is an independent student hackathon project, not an official CenterPoint Energy service. A report saved in our demo does not mean that a utility has received it or scheduled a repair.
 
@@ -52,7 +69,7 @@ The main experience is **open the website → take a picture → confirm the sug
 
 1. **Open the site and tap “Take a photo.”** Use the phone camera or choose an existing image. A passenger can report, or a driver can wait until safely parked.
 2. **Capture location with permission.** Request browser GPS near capture time, record its accuracy, and offer manual location entry if it is unavailable. An older uploaded photo needs its location confirmed separately.
-3. **Prepare the report automatically.** Suggest nearby poles from the available dataset, resolve an address when possible, and check for duplicates. Load the map when needed to confirm or correct the location.
+3. **Prepare the report automatically.** Suggest nearby poles from the available dataset and resolve an address when possible. Load the map when needed to confirm or correct the location.
 4. **Confirm the issue.** Show the photo, suggested pole, address, and a short issue selector: light out, flickering, damaged pole, leaning pole, exposed wires, or other. Photo-based classification is later work; a photo alone cannot reliably establish every issue.
 5. **Review and submit.** Validate the details, save the report and photo, and return an internal confirmation ID. Show success only after the save succeeds.
 6. **Show the next step.** Display demo status and a prepared summary/link for the official reporting process. Only an approved future integration may claim successful delivery to a utility.
@@ -70,7 +87,6 @@ GPS proximity alone does not prove which pole is affected. A photograph may lack
 | Location capture | Support GPS and manual correction |
 | Photo upload | Preview and validate a sample image |
 | Issue selection | Capture a consistent issue type and optional description |
-| Duplicate detection | Warn about a possible existing report for the same pole or nearby location |
 | Review and confirmation | Let users verify details and receive an internal report ID |
 | Status view | Display clearly labeled demo report progress |
 | Provider handoff | Prepare a report summary and link to the official reporting channel |
@@ -88,7 +104,7 @@ Use one TypeScript web application with managed database and storage services fo
 | Mapping | ArcGIS Maps SDK for JavaScript (`@arcgis/map-components`, `@arcgis/core`) | Basemap, pole markers, nearby candidates, and location correction |
 | Camera | HTML file input first; MediaDevices API for a later custom camera | Capture with the phone camera or choose an existing photo |
 | Location | Browser Geolocation API; ArcGIS geocoding when configured | Capture coordinates and accuracy, then suggest a nearby address |
-| API and validation | Next.js Route Handlers + Zod | Validate report payloads, authorize uploads, check duplicates, and save reports |
+| API and validation | Next.js Route Handlers + Zod | Validate report payloads, authorize uploads, and save reports |
 | Database | Supabase PostgreSQL | Store poles, reports, and internal status history; add PostGIS for spatial queries as needed |
 | Photo storage | Supabase Storage, private bucket | Store images separately from report rows; issue temporary authorized viewing links |
 | Identity | Supabase Auth | Anonymous sessions for low-friction reporting, with authenticated access for team/admin tools |
@@ -135,7 +151,7 @@ Deploy over HTTPS and request GPS only when the user begins a report. Geolocatio
 - **Small, validated uploads:** propose a 10 MB input limit and resize/compress supported images before upload. Validate actual file contents, size, and dimensions server-side; normalize orientation and remove unnecessary metadata. Test phone image formats and explain unsupported formats clearly.
 - **Private photos:** store an object path in the report, not a permanent public image URL. Use private storage, ownership policies, and short-lived signed read URLs. [Supabase storage access control](https://supabase.com/docs/guides/storage/security/access-control) and [private downloads](https://supabase.com/docs/guides/storage/serving/downloads) document these controls.
 - **Controlled writes:** use a scoped session, validate again on the server, enforce authorization and rate limits, and prevent clients from assigning themselves an admin role or setting a report to repaired. Never put privileged Supabase credentials in browser code.
-- **Reliable submission:** upload through an authorized storage path, save report metadata after upload validation, and clean up abandoned uploads. Use an idempotency key so a retry cannot create the same report twice; distinguish this from warnings about other reports at the same pole.
+- **Reliable submission:** upload through an authorized storage path, save report metadata after upload validation, and clean up abandoned uploads. Use an idempotency key so a retry cannot create the same report twice. This handles retries of the same submission only.
 - **Clear location confidence:** nearest-pole matching is a suggestion. Retain manual correction and handle no match, multiple nearby candidates, and unavailable geocoding without losing the report.
 - **Accessible UI:** provide labels, keyboard access, readable contrast, large touch targets, and text alongside map status colors. The map must have a usable list/form alternative.
 - **Test real phones:** verify capture/upload, retake, permissions, GPS fallback, slow connections, and retry behavior on iOS Safari and Android Chrome. Use Vitest for validation/matching logic and Playwright for the main browser flow.
@@ -177,7 +193,7 @@ Example branches: `feature/streetlight-map`, `feature/pole-id-gps`, `feature/pol
 - Build issue selection and the report form.
 - Display the selected pole, coordinates, address, and uploaded photo.
 - Implement review, validation feedback, submission, and confirmation screens.
-- Present duplicate warnings, errors, and demo status clearly.
+- Present errors and demo status clearly.
 
 Example branches: `feature/home-page`, `feature/issue-selection`, `feature/report-form`, `feature/report-review`, `feature/confirmation-screen`.
 
@@ -188,10 +204,10 @@ Example branches: `feature/home-page`, `feature/issue-selection`, `feature/repor
 - Implement Next.js Route Handlers with shared Zod schemas, Supabase persistence, and authorization.
 - Receive coordinates, suggest nearby poles, and resolve addresses.
 - Generate report IDs and persist reports.
-- Implement duplicate detection and report-status handling.
+- Implement report-status handling.
 - Keep the demo provider adapter separate from any future approved integration.
 
-Example branches: `feature/report-api`, `feature/gps-pole-matching`, `feature/address-lookup`, `feature/duplicate-detection`, `feature/report-status`.
+Example branches: `feature/report-api`, `feature/gps-pole-matching`, `feature/address-lookup`, `feature/report-status`.
 
 **Handoff:** document request/response shapes, errors, and status values before the frontend depends on them.
 
@@ -250,7 +266,7 @@ Proposed conventions:
 - Validate latitude/longitude ranges and use UTC timestamps. Add capture time and GPS accuracy to the implementation schema.
 - `photo_path` is a private storage object reference; generate authorized temporary viewing URLs when needed.
 - Allow unknown pole IDs and unavailable addresses/photos to be represented explicitly; finalize required versus optional fields together.
-- Finalize severity rules and duplicate-matching thresholds before implementation.
+- Finalize severity rules before implementation.
 - Contact information, if later collected, should be optional and excluded from public demo data.
 
 ## Step-by-step build plan
@@ -259,8 +275,8 @@ Proposed conventions:
 2. **Set up collaboration.** Create `develop` from the initial `main`, configure branch protection and review requirements, then add formatting, tests, and CI as the codebase is scaffolded.
 3. **Build the sample map.** Person 2 creates the mock pole dataset and selection flow while Person 4 implements the agreed lookup/report interfaces.
 4. **Connect the form and photos.** Persons 3 and 5 integrate location, issue selection, photo preview, and review with those interfaces.
-5. **Finish report processing.** Person 4 adds persistence, duplicate warnings, internal IDs, and demo statuses; Person 3 presents the results.
-6. **Test the whole journey.** Test normal reporting, denied GPS permission, incorrect location, no nearby pole, duplicate reports, invalid images, missing fields, and save/API failures.
+5. **Finish report processing.** Person 4 adds persistence, internal IDs, and demo statuses; Person 3 presents the results.
+6. **Test the whole journey.** Test normal reporting, denied GPS permission, incorrect location, no nearby pole, invalid images, missing fields, and save/API failures.
 7. **Prepare the demo.** Person 1 explains research and limitations; Person 5 documents setup and deploys the tested demo. Demonstrate sample data and a clear official-provider handoff.
 8. **Release tested work.** Open a `develop` → `main` pull request only after the combined application passes review and verification.
 
@@ -438,4 +454,4 @@ Open research questions: Is an approved pole dataset available? What are its reu
 
 ## Demo success criteria
 
-A teammate can open the website on a phone, capture or choose a sample photo, confirm the suggested pole/location, choose an issue, review a duplicate warning when applicable, save the report, and view an internal confirmation/status. The presentation clearly explains what is simulated and what would require an approved provider integration.
+A teammate can open the website on a phone, capture or choose a sample photo, confirm the suggested pole/location, choose an issue, save the report, and view an internal confirmation/status. The presentation clearly explains what is simulated and what would require an approved provider integration.

@@ -14,7 +14,7 @@ Primary paths: `src/app/api/`, `src/lib/server/`, `src/lib/schemas/`, `supabase/
 
 1. Implement shared Zod contracts and publish typed request/response shapes.
 2. Create migrations for poles, reports, and report status events, with ownership and access policies.
-3. Implement nearby-pole lookup, optional geocoding, bounded duplicate checks, and manual-location support.
+3. Implement nearby-pole lookup, optional geocoding and manual-location support.
 4. Authorize photo upload references and report access; validate ownership before saving.
 5. Implement idempotent report creation, server-generated IDs/timestamps, and a demo-only provider adapter.
 

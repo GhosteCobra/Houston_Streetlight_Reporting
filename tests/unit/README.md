@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Schema boundaries, pole matching, duplicate rules, and isolated logic.
+Schema boundaries, pole matching, and isolated logic.
 
 ## Planned contents
 

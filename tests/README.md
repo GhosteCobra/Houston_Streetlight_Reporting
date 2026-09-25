@@ -11,7 +11,6 @@ Use Vitest for schema, matching, and idempotency logic; integration tests for da
 | Old uploaded photo | User confirms location separately | 3 + 5 |
 | No/ambiguous nearby pole | Manual correction or null pole allowed | 2 + 4 |
 | Map/geocoder unavailable | Coordinates/form remain usable | 2 + 3 |
-| Possible duplicate | Reviewable warning; no silent discard | 3 + 4 |
 | Same-key concurrent retry | One report; repeat returns same ID | 4 |
 | Same key, changed payload | Conflict without overwriting original | 4 |
 | Large, spoofed, corrupt image | Rejected before attachment to report | 4 + 5 |

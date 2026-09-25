@@ -8,13 +8,10 @@
 | POST /api/location | latitude, longitude | `{address: string or null}`; lookup unavailable may return null |
 | POST /api/uploads | filename, content_type, size_bytes | 201: `{upload_id, photo_path, upload_url, expires_at}` for session-scoped staging |
 | POST /api/uploads/complete | upload_id | `{photo_path, validated: true}` after server content validation; rejected objects cannot attach to reports |
-| POST /api/reports/duplicates | confirmed coordinates, pole_id, issue_type | `{possible_duplicates: [{report_id, distance_m, status}]}` with no photo/contact details |
 | POST /api/reports | Data-contract creation input; Idempotency-Key header | 201 for creation or 200 for identical retry: `{report_id, status, reported_at, provider_delivery_status}` |
 | GET /api/reports/:id | Report ID | Authorized report plus temporary photo URL if present |
 
 Proposed limits: 1 km maximum pole-query radius, at most 100 candidates per response, and 10 MB maximum photo input. Surface truncation so callers can narrow the query. Confirm these defaults during implementation and use the same limits in UI, API, and tests.
-
-For duplicate candidates, start with matching issue type on an active report within 7 days and either the same known pole or within 25 m when no pole is available. Active means submitted, under_review, or assigned. These are tunable demo defaults, not utility policy; test false matches and do not block legitimate new reports. Return candidate summaries only if the session may view them; cross-user duplication requires a privacy-reviewed aggregate design later.
 
 ## Errors
 
