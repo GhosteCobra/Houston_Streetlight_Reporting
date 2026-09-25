@@ -1,6 +1,6 @@
 # Unit checks
 
-**Owner:** Each feature owner. **Status:** documentation placeholder; implementation pending.
+**Owner:** Each feature owner. **Status:** exporter tests available; application tests pending.
 
 ## Purpose
 
@@ -18,4 +18,4 @@ Use the [team guides](../../docs/README.md) for dependencies, acceptance criteri
 
 ## Exporter acceptance tests
 
-[test_streetlight_export.py](test_streetlight_export.py) tests the supplied Python exporter with synthetic responses and temporary outputs. With Python and requests available, run `python -X utf8 -m unittest discover -s tests/unit -p test_streetlight_export.py -v` from the repository root. Three acceptance tests currently fail; see the [test report](../../docs/streetlight-export-test-report.md). No network access is used by these tests.
+[test_streetlight_export.py](test_streetlight_export.py) tests the supplied Python exporter with synthetic responses and temporary outputs. With Python and requests available, run `python -X utf8 -m unittest discover -s tests/unit -p test_streetlight_export.py -v` from the repository root. All 18 exporter acceptance tests pass; see the [test report](../../docs/streetlight-export-test-report.md). No network access is used by these tests.
