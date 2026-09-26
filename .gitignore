@@ -18,3 +18,4 @@ __pycache__/
 .expo/
 dist/
 *.tsbuildinfo
+/next-env.d.ts

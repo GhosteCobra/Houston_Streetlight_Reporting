@@ -13,7 +13,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src shared mobile/app mobile/components mobile/lib",
-    "typecheck": "tsc --noEmit && npm run typecheck --workspace mobile",
+    "typecheck": "next typegen && tsc --noEmit && npm run typecheck --workspace mobile",
     "test": "node --experimental-strip-types --test tests/unit/report.test.ts",
     "mobile": "npm start --workspace mobile"
   },
