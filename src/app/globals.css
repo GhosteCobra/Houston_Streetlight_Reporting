@@ -1303,6 +1303,23 @@ h2 {
   margin-left: auto;
   white-space: nowrap;
 }
+.streetlight-suggestion {
+  margin: 16px 0;
+  padding: 18px;
+  border: 1px solid #ded6ef;
+  border-radius: 16px;
+  background: #f6f3fb;
+}
+.streetlight-suggestion h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+.streetlight-suggestion p {
+  line-height: 1.5;
+}
+.streetlight-suggestion .action-pair {
+  margin-bottom: 0;
+}
 @media (max-width: 999px) {
   .demo-banner {
     flex-wrap: wrap;

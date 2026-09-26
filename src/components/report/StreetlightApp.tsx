@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Brand from "./Brand";
 import CameraCapture from "../camera/CameraCapture";
+import StreetlightSuggestion from "./StreetlightSuggestion";
 import {
   coordinateSchema,
   HOUSTON,
@@ -50,6 +51,8 @@ export default function StreetlightApp() {
     [confirmed, setConfirmed] = useState(false),
     [poles, setPoles] = useState<Pole[]>([]),
     [poleLoading, setPoleLoading] = useState(false),
+    [poleError, setPoleError] = useState(""),
+    [lookupAttempt, setLookupAttempt] = useState(0),
     [locationLoading, setLocationLoading] = useState(false),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
@@ -67,6 +70,7 @@ export default function StreetlightApp() {
     [address, setAddress] = useState("");
   const request = useRef(0),
     saveLock = useRef(false),
+    candidateList = useRef<HTMLHeadingElement>(null),
     title = useRef<HTMLHeadingElement>(null);
   const refresh = useCallback(async () => {
     try {
@@ -91,23 +95,30 @@ export default function StreetlightApp() {
   useEffect(() => {
     if (!location) {
       setPoles([]);
+      setPoleLoading(false);
+      setPoleError("");
       return;
     }
     const controller = new AbortController();
     setPoleLoading(true);
+    setPoleError("");
     setPoles([]);
     poleAdapter
       .nearby(location, controller.signal)
-      .then(setPoles)
-      .catch((e) => {
-        if (e.name !== "AbortError")
-          setError("Pole suggestions are unavailable. Use a manual pin.");
+      .then((nextPoles) => {
+        if (!controller.signal.aborted) setPoles(nextPoles);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted)
+          setPoleError(
+            "Streetlight lookup failed. Try again or confirm a manual pin.",
+          );
       })
       .finally(() => {
         if (!controller.signal.aborted) setPoleLoading(false);
       });
     return () => controller.abort();
-  }, [location?.latitude, location?.longitude]);
+  }, [location?.latitude, location?.longitude, lookupAttempt]);
   const changeLocation = useCallback(
     (
       point: Coordinates,
@@ -117,6 +128,10 @@ export default function StreetlightApp() {
       request.current++;
       setLocationLoading(false);
       setLocation({ ...point, accuracy, source, address: "" });
+      setPoles([]);
+      setPoleLoading(true);
+      setPoleError("");
+      setLookupAttempt((attempt) => attempt + 1);
       setPole(null);
       setConfirmed(false);
       setLat(point.latitude.toFixed(6));
@@ -126,6 +141,11 @@ export default function StreetlightApp() {
     [],
   );
   async function locate() {
+    request.current++;
+    setLocation(null);
+    setPoles([]);
+    setPole(null);
+    setConfirmed(false);
     setError("");
     setNotice("");
     if (!navigator.geolocation || !window.isSecureContext) {
@@ -145,17 +165,22 @@ export default function StreetlightApp() {
           pos.coords.accuracy,
         );
       },
-      () => {
+      (failure) => {
         if (token !== request.current) return;
         setLocationLoading(false);
         setError(
-          "We could not get your location. Allow location in browser settings, or choose a point manually below.",
+          failure.code === 1
+            ? "We could not get your location: location permission was denied. Allow location in browser settings, or choose a point manually below."
+            : failure.code === 3
+              ? "Location lookup timed out. Try again or choose a point manually below."
+              : "Your location is unavailable. Try again or choose a point manually below.",
         );
       },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 },
     );
   }
   function choosePole(value: string) {
+    if (poleLoading || locationLoading) return;
     const chosen = poles.find((p) => p.id === value);
     if (!chosen) return;
     setPole(chosen);
@@ -202,6 +227,8 @@ export default function StreetlightApp() {
     setNotice("");
   }
   function edit(d: Draft) {
+    request.current++;
+    setLocationLoading(false);
     setPhoto(d.photo);
     setLocation(d.location);
     setAddress(d.location.address);
@@ -363,7 +390,13 @@ export default function StreetlightApp() {
             <CameraCapture
               photo={photo}
               onPhoto={(p) => {
+                request.current++;
+                setLocationLoading(false);
                 setPhoto(p);
+                setLocation(null);
+                setPoles([]);
+                setPole(null);
+                setConfirmed(false);
                 if (!p) {
                   setHeading(null);
                   setUseHeading(false);
@@ -375,7 +408,7 @@ export default function StreetlightApp() {
               }}
               onContinue={() => {
                 setStep("location");
-                setError("");
+                locate();
               }}
             />
             <button
@@ -434,6 +467,44 @@ export default function StreetlightApp() {
                 Explore demo area
               </button>
             </div>
+            {photo && (
+              <p className="field-help">
+                GPS uses your current location, not the location in the photo.
+                If the photo was taken elsewhere, choose that location manually.
+              </p>
+            )}
+            {locationLoading && (
+              <p role="status">Finding your current location…</p>
+            )}
+            {poleLoading && (
+              <p role="status">Looking up nearby streetlights…</p>
+            )}
+            {error && <p className="error" role="alert">{error}</p>}
+            {poleError && (
+              <div className="error" role="alert">
+                <p>{poleError}</p>
+                <button
+                  className="secondary"
+                  onClick={() => setLookupAttempt((attempt) => attempt + 1)}
+                >
+                  Retry streetlight lookup
+                </button>
+              </div>
+            )}
+            {!locationLoading &&
+              !poleLoading &&
+              !poleError &&
+              !confirmed &&
+              candidates[0] && (
+                <StreetlightSuggestion
+                  candidate={candidates[0]}
+                  onConfirm={() => choosePole(candidates[0].id)}
+                  onChooseAnother={() => {
+                    candidateList.current?.scrollIntoView({ block: "center" });
+                    candidateList.current?.focus({ preventScroll: true });
+                  }}
+                />
+              )}
             {location?.accuracy !== null &&
               location?.accuracy !== undefined && (
                 <p className="info">
@@ -529,7 +600,9 @@ export default function StreetlightApp() {
                       )}
                     </div>
                     <div className="candidates-heading">
-                      <h2>Possible poles</h2>
+                      <h2 ref={candidateList} tabIndex={-1}>
+                        Possible poles
+                      </h2>
                       <span>SELECT A POLE</span>
                     </div>
                     <p className="field-help">
@@ -578,12 +651,12 @@ export default function StreetlightApp() {
                           </button>
                         ))}
                       </div>
-                    ) : (
+                    ) : !poleError ? (
                       <p className="info">
                         No sample poles within 750 m of this location. Confirm
                         your manual pin, or explore the demo area.
                       </p>
-                    )}
+                    ) : null}
                     <button
                       className={
                         "manual-pin " + (confirmed && !pole ? "selected" : "")
@@ -617,6 +690,8 @@ export default function StreetlightApp() {
                 <button
                   className="text-button"
                   onClick={() => {
+                    request.current++;
+                    setLocationLoading(false);
                     setStep("photo");
                     setError("");
                   }}
@@ -846,7 +921,7 @@ export default function StreetlightApp() {
             )}
           </div>
         )}
-        {error && (
+        {error && !showMap && (
           <p className="error" role="alert">
             {error}
           </p>
