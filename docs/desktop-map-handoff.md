@@ -6,7 +6,7 @@ Owner: Codex, frontend integration across Persons 2 and 3. Review partners: Pers
 
 Base: main 4c77a0f. Task: codex/web-0926 in the separate Streetlight-web-0926 worktree. The original checkout and other agents' worktrees were left untouched. Created develop at the existing main commit because it was absent. GitHub returned no open pull requests before editing.
 
-The exporter branch codex/test-streetlight-export at 0aefce6 is already an ancestor of main. The camera and Vercel branches are also incorporated. They do not need another merge.
+The exporter branch codex/test-streetlight-export at 0aefce6 is already an ancestor of main. The camera and Vercel branches are also incorporated. They do not need another merge. The remote exporter branch is now named map-data, and the Person 3 branch is now named frontend. Their commit histories are unchanged. Existing clones can fetch and update their upstream branch names.
 
 Selected the generated neighborhood illustration and desktop entry pattern from Person 3's branch at 03a9487. Kept the working camera component, ArcGIS map, report controller, and IndexedDB format. This is a selective integration, not a full merge of the alternate frontend or its Expo workspace. Its separate app, dependencies, and report store remain on that branch.
 
