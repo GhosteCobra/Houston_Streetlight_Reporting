@@ -15,3 +15,8 @@ schemas/, arcgis/, server/.
 Do not re-export server secrets through a shared browser import. Document interface changes before consumers depend on them.
 
 Use the [team guides](../../docs/README.md) for dependencies, acceptance criteria, and workflow, and the [shared contract](../../docs/data-contract.md) for field definitions. Update this folder guide with actual entry points and verified commands as code is added.
+
+## Person 3 implementation
+
+Implemented: demo-store.ts is a browser-local adapter only. Shared browser/native validation lives at shared/report.ts in the repository root. No server API or persistence service is implemented.
+

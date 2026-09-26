@@ -1,0 +1,1 @@
+{"expo":{"name":"Streetlight Check","slug":"streetlight-check","scheme":"streetlight-check","version":"0.1.0","orientation":"portrait","userInterfaceStyle":"light","plugins":["expo-router"],"web":{"bundler":"metro","output":"single"}}}

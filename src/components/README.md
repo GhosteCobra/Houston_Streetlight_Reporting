@@ -15,3 +15,8 @@ map/, camera/, report/ components and colocated focused tests when implemented.
 Expose typed inputs/events. The report page owns the draft; reusable components do not independently submit reports.
 
 Use the [team guides](../../docs/README.md) for dependencies, acceptance criteria, and workflow, and the [shared contract](../../docs/data-contract.md) for field definitions. Update this folder guide with actual entry points and verified commands as code is added.
+
+## Person 3 implementation
+
+Implemented: Shell, StreetlampIcon, and report UI components. SampleMap is a Person 3 demo component in report/; the map/ and camera/ owner directories remain untouched.
+

@@ -15,3 +15,8 @@ Future layout.tsx and page.tsx; report/ journey; api/ server endpoints.
 Camera and ArcGIS usage belongs behind client boundaries. Coordinate layout/global-style changes with other owners.
 
 Use the [team guides](../../docs/README.md) for dependencies, acceptance criteria, and workflow, and the [shared contract](../../docs/data-contract.md) for field definitions. Update this folder guide with actual entry points and verified commands as code is added.
+
+## Person 3 implementation
+
+Implemented routes: /, /map, /report and /reports. The report route owns photo, details, review and confirmation states. Server API routes remain for Person 4.
+

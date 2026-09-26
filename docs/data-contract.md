@@ -59,3 +59,8 @@ Draft state is local for MVP. Persisted status progression is submitted → unde
 ## Storage and access
 
 Report owners can retrieve their own records; admin access requires an explicit trusted role. Do not expose a public report list containing photos or precise resident data. Store object paths, not signed URLs; mint short-lived links only after authorization. Session ownership must be enforced by database/storage policies and server checks.
+
+## Person 3 preview implementation
+
+The shared report input validation now lives in shared/report.ts. Its ReportInput follows the proposed fields above. A separate DemoReport adds a local_demo mode, a DEMO-prefixed local ID, and provider_delivery_status=not_sent. Local demo records are browser/device previews, not server responses; server ownership and authenticated persistence remain pending. See [Person 3 handoff](person3-handoff.md).
+

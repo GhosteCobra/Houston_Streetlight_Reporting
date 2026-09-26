@@ -15,3 +15,8 @@ Future IssueSelector, ReportReview, DuplicateNotice, and Confirmation components
 Use shared enums and schema errors. Keep photos private and distinguish internal status from official utility delivery.
 
 Use the [team guides](../../../docs/README.md) for dependencies, acceptance criteria, and workflow, and the [shared contract](../../../docs/data-contract.md) for field definitions. Update this folder guide with actual entry points and verified commands as code is added.
+
+## Person 3 implementation
+
+Implemented: ReportJourney provides optional photo preview, manual/GPS location, issue selection, duplicate acknowledgement, review and local confirmation. SampleMap receives typed poles and emits selection events.
+
