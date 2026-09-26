@@ -57,7 +57,7 @@ test("Photo to confirmed demo pole to local draft; edit and reload; no utility s
     page.getByText("CenterPoint has not received a report."),
   ).toBeVisible();
   await page.reload();
-  await page.getByRole("button", { name: "My reports" }).click();
+  await page.getByRole("button", { name: "Saved drafts" }).click();
   await expect(
     page.getByRole("heading", { name: "Light out", exact: true }),
   ).toBeVisible();
@@ -131,14 +131,13 @@ test("Camera stream stops when navigating away (synthetic test stream)", async (
   await expect(
     page.getByRole("button", { name: "Close camera" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "My reports" }).click();
+  await page.getByRole("button", { name: "Saved drafts" }).click();
   await expect
     .poll(() =>
       page.evaluate(() => (window as Window & { stopped?: boolean }).stopped),
     )
     .toBe(true);
 });
-
 
 test("No-photo draft can be saved, reopened, and edited", async ({ page }) => {
   await page.goto("/");
@@ -148,9 +147,41 @@ test("No-photo draft can be saved, reopened, and edited", async ({ page }) => {
   await page.getByRole("button", { name: "Review report" }).click();
   await expect(page.getByText("No photo attached")).toBeVisible();
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Draft saved", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Draft saved", exact: true }),
+  ).toBeVisible();
   await page.reload();
-  await page.getByRole("button", { name: /^My reports/ }).click();
+  await page.getByRole("button", { name: /^Saved drafts/ }).click();
   await page.getByRole("button", { name: "Review & edit" }).click();
   await expect(page.getByText("No photo attached")).toBeVisible();
+});
+
+test("Desktop map shows candidates beside the map and keeps selection on phone", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await page
+    .getByRole("button", { name: "Explore the map", exact: true })
+    .click();
+  const candidate = page.getByRole("button", { name: /DEMO-101/ });
+  await expect(candidate).toBeVisible();
+  const map = await page.locator(".map-layout > .map-shell").boundingBox();
+  const controls = await page.locator(".map-controls").boundingBox();
+  expect(map).not.toBeNull();
+  expect(controls!.x).toBeGreaterThan(map!.x + map!.width);
+  await candidate.click();
+  await expect(candidate).toHaveAttribute("aria-pressed", "true");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(candidate).toHaveAttribute("aria-pressed", "true");
+  const phoneMap = await page.locator(".map-layout > .map-shell").boundingBox();
+  const phoneControls = await page.locator(".map-controls").boundingBox();
+  expect(phoneControls!.y).toBeGreaterThanOrEqual(
+    phoneMap!.y + phoneMap!.height,
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
 });

@@ -150,7 +150,7 @@ export default function StreetlightMap({
       <span className="map-demo">DEMO POLES</span>
       <div className="map-hint">
         <MapPin size={14} />
-        Tap the map to move your pin. Pole list below.
+        Select a streetlight or place a pin.
       </div>
     </div>
   );
