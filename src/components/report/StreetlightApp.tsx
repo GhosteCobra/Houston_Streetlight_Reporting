@@ -221,8 +221,8 @@ export default function StreetlightApp() {
   }
   async function save() {
     if (saveLock.current) return;
-    if (!photo || !location || !confirmed) {
-      setError("Add a photo and confirm a pole or map location first.");
+    if (!location || !confirmed) {
+      setError("Confirm a pole or map location first.");
       return;
     }
     saveLock.current = true;
@@ -369,6 +369,13 @@ export default function StreetlightApp() {
                 setError("");
               }}
             />
+            <button className="text-button" onClick={() => {
+              setPhoto(null);
+              setHeading(null);
+              setUseHeading(false);
+              setStep("location");
+              setError("");
+            }}>Continue without a photo</button>
             <div className="location-note">
               <MapPin size={19} />
               <span>Next, choose where you saw the streetlight.</span>
@@ -627,10 +634,10 @@ export default function StreetlightApp() {
             )}
           </div>
         )}
-        {tab === "report" && step === "review" && photo && location && (
+        {tab === "report" && step === "review" && location && (
           <div className="review-content">
             <div className="review-photo">
-              <img src={photo} alt="Photo to include with your draft" />
+              {photo ? <img src={photo} alt="Photo to include with your draft" /> : <p>No photo attached</p>}
               <button
                 className="glass-button"
                 onClick={() => setStep("photo")}
@@ -785,7 +792,7 @@ export default function StreetlightApp() {
             ) : (
               drafts.map((d) => (
                 <article className="draft-card" key={d.id}>
-                  <img src={d.photo} alt="Saved streetlight photograph" />
+                  {d.photo && <img src={d.photo} alt="Saved streetlight photograph" />}
                   <div>
                     <small>DRAFT · NOT SENT</small>
                     <h2>{d.issue}</h2>

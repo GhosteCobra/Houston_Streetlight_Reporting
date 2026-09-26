@@ -2,9 +2,9 @@
 
 A mobile-first, camera-first web app planned as a hackathon project to help residents report streetlight problems in Houston, Galveston, and the surrounding area safely and accurately.
 
-**Status: runnable frontend prototype on the feature branch.** Run `npm ci` and `npm run dev`, then open http://localhost:3000. The camera-first flow supports capture/upload, confirmed map location, demo pole ranking, review and device-local drafts. Nothing is submitted to CenterPoint. See [local and phone setup](docs/local-frontend.md), [data assessment](docs/arcgis-data-assessment.md), and [test results](docs/frontend-test-results.md).
+**Status: runnable frontend demo.** Run `npm ci` and `npm run dev`, then open http://localhost:3000. The camera-first flow supports capture/upload, confirmed map location, demo pole ranking, review and device-local drafts. Nothing is submitted to CenterPoint. See [local and phone setup](docs/local-frontend.md), [data assessment](docs/arcgis-data-assessment.md), and [test results](docs/frontend-test-results.md).
 
-**Implemented stack:** Next.js 16, React 19, TypeScript, CSS, ArcGIS Maps SDK, Zod and IndexedDB (`idb`), with Vitest and Playwright. Supabase and Vercel remain future integrations. The historical roadmap below is proposed; the runtime guide is the source of truth for this branch.
+**Implemented stack:** Next.js 16, React 19, TypeScript, CSS, ArcGIS Maps SDK, Zod and IndexedDB (`idb`), with Vitest and Playwright. Vercel configuration is included; Supabase remains unimplemented. See the [frontend comparison](docs/frontend-comparison.md) and [phone deployment guide](docs/phone-preview.md). The historical roadmap below is proposed; the runtime guide is the source of truth for this branch.
 
 ## Start building
 

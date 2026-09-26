@@ -1,6 +1,6 @@
 # Run and test Streetlight Check
 
-The frontend runs on the `codex/camera-first-0926` feature branch. It is not merged or deployed. `/` and `/report` open the Report screen; Map and My reports are tabs in the same draft controller.
+The camera frontend is integrated with Vercel setup on `codex/vercel-phone-preview-0926`. See [hosting setup](phone-preview.md) and [release comparison](frontend-comparison.md). `/` and `/report` open the Report screen; Map and My reports are tabs in the same draft controller.
 
 ## Run locally
 
@@ -50,11 +50,12 @@ Browser tests use synthetic images, mocked permission errors and synthetic camer
 ## Current behavior and contracts
 
 - `StreetlightApp` owns one in-memory report: photo → location/pole → review → saved draft. Unsaved input is lost on page reload. Saved drafts can be edited on the same browser/origin.
+- Continue without a photo is available; photo-free drafts can be saved and reopened.
 - `CameraCapture` starts only after a tap, handles denial/unavailable devices, and stops tracks on capture, close, unmount or backgrounding. JPEG/PNG/WebP uploads are decoded, limited to 10 MB and 60 million pixels, resized to 1280 pixels and re-encoded without original EXIF. HEIC is not supported.
 - `StreetlightMap` is loaded only in the browser. It uses ArcGIS Maps SDK and the OpenStreetMap basemap with attribution. A list and coordinate fields remain available if rendering fails. Addresses are notes, not geocoded searches.
 - `PoleDataAdapter.nearby` returns fixed synthetic DEMO poles within 750 m. The frontend never requests CenterPoint's pole service. [The data assessment](arcgis-data-assessment.md) explains why.
 - Ranking combines distance, a user-transcribed number visible in the photo, and optional approximate compass heading if the browser exposes it. This version has no OCR, image classifier, or calibrated confidence score. Every candidate requires a tap; an unknown pole requires explicit pin confirmation. GPS cannot establish the pole or street side.
-- `src/lib/report/model.ts` is the implemented local schema. A `Draft` has photo data, confirmed location, nullable pole ID, issue, description, optional number/heading evidence, UUID and save time. Its status is always `draft`, provider delivery is always `not_sent`, and data source is `demo`. It does not implement the proposed server contract in `data-contract.md` or `api-contract.md`.
+- `src/lib/report/model.ts` is the implemented local schema. A `Draft` has nullable photo data, confirmed location, nullable pole ID, issue, description, optional number/heading evidence, UUID and save time. Its status is always `draft`, provider delivery is always `not_sent`, and data source is `demo`. It does not implement the proposed server contract in `data-contract.md` or `api-contract.md`.
 - `src/lib/report/storage.ts` validates records and stores up to 20 drafts in IndexedDB. Saving edits overwrites the same UUID. Errors keep the form available for retry. No Supabase, authentication, server upload or provider submission exists.
 - The saved screen links to the official CenterPoint site. Nothing is transferred automatically, and a demo ID must never be entered as a real utility ID.
 

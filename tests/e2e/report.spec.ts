@@ -138,3 +138,19 @@ test("Camera stream stops when navigating away (synthetic test stream)", async (
     )
     .toBe(true);
 });
+
+
+test("No-photo draft can be saved, reopened, and edited", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Continue without a photo" }).click();
+  await page.getByRole("button", { name: "Explore demo area" }).click();
+  await page.getByRole("button", { name: /DEMO-101/ }).click();
+  await page.getByRole("button", { name: "Review report" }).click();
+  await expect(page.getByText("No photo attached")).toBeVisible();
+  await page.getByRole("button", { name: "Save draft", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Draft saved", exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByRole("button", { name: /^My reports/ }).click();
+  await page.getByRole("button", { name: "Review & edit" }).click();
+  await expect(page.getByText("No photo attached")).toBeVisible();
+});

@@ -61,3 +61,5 @@ Draft state is local for MVP. Persisted status progression is submitted → unde
 ## Storage and access
 
 Report owners can retrieve their own records; admin access requires an explicit trusted role. Do not expose a public report list containing photos or precise resident data. Store object paths, not signed URLs; mint short-lived links only after authorization. Session ownership must be enforced by database/storage policies and server checks.
+
+The implemented browser-local Draft model accepts a null photo for the no-photo fallback. Existing photo-bearing drafts remain compatible; this does not change the proposed server API.

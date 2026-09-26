@@ -25,7 +25,7 @@ export const issues = [
 export const draftSchema = z.object({
   id: z.string(),
   savedAt: z.string(),
-  photo: z.string().regex(/^data:image\/(jpeg|png|webp);base64,/),
+  photo: z.string().regex(/^data:image\/(jpeg|png|webp);base64,/).nullable(),
   location: coordinateSchema.extend({
     accuracy: z.number().nullable(),
     source: z.enum(["gps", "manual", "demo"]),

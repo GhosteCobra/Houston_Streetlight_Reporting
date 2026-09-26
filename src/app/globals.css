@@ -689,7 +689,7 @@ label > span {
   font-weight: 400;
   color: var(--muted);
 }
-input:not([type="checkbox"]),
+input:not([type="checkbox"]):not([type="file"]),
 select,
 textarea {
   width: 100%;

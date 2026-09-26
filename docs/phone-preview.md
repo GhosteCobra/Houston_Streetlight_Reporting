@@ -4,15 +4,17 @@
 
 Deployment bootstrap branch: `codex/vercel-phone-preview-0926`, based on `origin/main` at `0aefce6`. There was no `develop` branch at task start. This branch adds hosting configuration and this guide, without merging to main or changing the other agent's checkout.
 
-The base contains no runnable Next.js app or package lockfile. The camera task owns application bootstrap on `codex/camera-first-0926`. A working application commit must be integrated and tested before Vercel can build this branch. No live URL or phone-test pass is claimed by this setup.
+The camera frontend at `c64ca1e` is now integrated with this Vercel configuration. It is a browser-local demo with synthetic poles and no utility submission or Supabase backend. See [frontend comparison](frontend-comparison.md) for the selection and verification record.
+
+The existing Vercel project is `streetlight-checker/houston-streetlight-reporting`, connected to this repository with `main` as production. Its public domain is https://houston-streetlight-reporting.vercel.app. Verify the deployed commit before testing; the initial production deployment used the older documentation-only commit.
 
 ## What the account owner does
 
 1. Sign in to [Vercel](https://vercel.com/dashboard) with the account that should own the preview. If creating an account, complete the account and terms steps yourself.
-2. Once the application commit is ready, import `GhosteCobra/Houston_Streetlight_Reporting` through **Add New → Project**, or use its existing Vercel project. If Vercel cannot see the repository, grant its GitHub integration access to this repository.
+2. For a new setup, import `GhosteCobra/Houston_Streetlight_Reporting` through **Add New → Project**, or use its existing Vercel project. If Vercel cannot see the repository, grant its GitHub integration access to this repository.
 3. Use the repository root as Root Directory and **Next.js** as the framework. The root `vercel.json` uses `npm ci` and `npm run build`; these require the app's committed `package.json` and `package-lock.json`. Leave Output Directory at the framework default. Use the Node major specified by the application scaffold.
 4. Keep the Production branch set to `main`. Deploy `codex/vercel-phone-preview-0926` as a **Preview**, using the project's deployment creation action to select that branch after import, or by pushing a new commit on that branch once Git is connected. Do not change production branch tracking just to test a phone. Importing documentation-only main may fail its initial build; the runnable preview branch is the one to deploy.
-5. Add only environment variables required by the integrated app to the **Preview** environment. A browser-only camera demo may need none. If the app uses Supabase, use a separate sample project and the names in [setup](setup.md): `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Never use a secret/service-role key in a public variable. Redeploy after changing environment variables. Do not add made-up provider-mode variables; verify the implementation actually keeps provider delivery `not_sent`.
+5. Add only environment variables required by the integrated app to the **Preview** environment. The current browser-local demo needs none. If the app uses Supabase, use a separate sample project and the names in [setup](setup.md): `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Never use a secret/service-role key in a public variable. Redeploy after changing environment variables. Do not add made-up provider-mode variables; verify the implementation actually keeps provider delivery `not_sent`.
 6. Wait for **Ready**, then copy the actual HTTPS deployment URL. Open it in Safari on iPhone or Chrome on Android. Your phone can use cellular data or any Wi-Fi; your computer does not need to stay running.
 7. Use the deployment's **Share** control to give teammates access. If a teammate sees a Vercel login or access-request page, grant preview access through Vercel's sharing flow. Keep deployment protection enabled. Do not post protected share links containing access tokens in Git or public evidence.
 
@@ -54,6 +56,6 @@ Record the exact deployment URL, commit, phone model, OS/browser version, and pa
 
 ## Setup handoff
 
-Owner: this task, Person 5 deployment scope. Review partner: Person 3 for app compatibility; Person 4 if storage or credentials are added. Dependencies: camera application bootstrap, Vercel account access, GitHub integration access. No shared data/API contract changes.
+Owner: this task, Person 5 deployment scope. Review partner: Person 3 for app compatibility; Person 4 if storage or credentials are added. Dependencies: Vercel Git integration and a successful deployment of the integrated commit. No shared data/API contract changes.
 
-Skills applied: new-feature, evidence-driven-testing, unslop, with repository overrides. Documentation/configuration checks are recorded in the task handoff. Hosted build, real-phone testing, backend isolation, and Greptile review remain not run until evidence is recorded.
+Skills applied: new-feature, evidence-driven-testing, unslop, with repository overrides. Documentation/configuration checks are recorded in the task handoff. Physical-phone testing, backend isolation, and Greptile review remain not run. See the comparison record for local build and browser checks.
