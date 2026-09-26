@@ -4,13 +4,15 @@ Revision under test: feature branch `codex/camera-first-0926`, based on `origin/
 
 ## Results
 
-- `npm run typecheck`: passed.
-- `npm test`: passed, 9 unit tests for WGS84 validation, demo data boundaries, evidence-based ranking, and unsubmitted draft status.
-- `npm run test:e2e`: passed, 4 browser tests: camera denied/upload fallback; photo → confirmed demo pole → review → local save → reload/edit; denied GPS/invalid coordinates/manual location; camera tracks stop on navigation.
+The bundled environment had no `npm` executable, so the installed package CLIs were invoked directly (the package scripts point to these same commands).
+
+- `node node_modules/.bin/tsc --noEmit`: passed.
+- `node node_modules/.bin/vitest run`: passed, 9 unit tests for WGS84 validation, demo data boundaries, evidence-based ranking, and unsubmitted draft status.
+- `node node_modules/@playwright/test/cli.js test`: passed, 4 browser tests: camera denied/upload fallback; photo → confirmed demo pole → review → local save → reload/edit; denied GPS/invalid coordinates/manual location; camera tracks stop on navigation. These ran against the production server at localhost:3000 with a 390×844 Playwright viewport.
 - `python3 scripts/check_framework.py`: passed after local docs were added.
-- `python3 -m unittest discover -s tests/unit -p 'test_*.py'`: pending an explicit run of the existing bounded-exporter tests. No real asset records were committed.
+- The existing bounded-exporter suite: 18 tests passed with Python 3.12. The environment lacks its `requests` dependency, so the test process supplied a minimal `requests` interface; every transport call is mocked by the suite and no network access was made. No real asset records were committed.
 - `git diff --check`: passed.
-- `npm run build` equivalent (`next build --webpack`): passed; production routes `/` and `/report` were prerendered. Turbopack build stalled on ArcGIS compilation; the documented build script selects webpack.
+- `node node_modules/next/dist/bin/next build --webpack`: passed; production routes `/` and `/report` were prerendered. Turbopack build stalled on ArcGIS compilation; the documented build script selects webpack.
 - Greptile review: not run; the configured reviewer is unavailable in this environment.
 
 The camera and GPS browser cases mock denied permissions. The stream cleanup case uses a generated canvas stream. These tests verify app handling and state cleanup, not physical-device camera, compass, or GPS accuracy. A physical phone pass remains for the team.
