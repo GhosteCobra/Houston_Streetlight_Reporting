@@ -274,7 +274,7 @@ export default function StreetlightApp() {
     : [];
   const sectionTitle =
     tab === "reports"
-      ? "My reports"
+      ? "Saved drafts"
       : tab === "map"
         ? "Find your streetlight"
         : step === "photo"
@@ -284,23 +284,38 @@ export default function StreetlightApp() {
             : step === "review"
               ? "Review your report"
               : "Draft saved";
-  const subtitle =
-    tab === "reports"
-      ? "Your drafts, kept on this device."
-      : tab === "map"
-        ? "Explore the sample map. Every pole is demo data."
-        : step === "photo"
-          ? "Take a clear photo of the pole or light."
-          : step === "location"
-            ? "A nearby pole is a suggestion. You make the call."
-            : step === "review"
-              ? "A quick check before you save."
-              : "Ready when you are. Nothing has been sent.";
   const showMap = tab === "map" || (tab === "report" && step === "location");
   return (
-    <div className="app">
+    <div
+      className={`app ${showMap ? "app-map" : ""} ${tab === "report" && step === "photo" ? "app-start" : ""}`}
+    >
       <Brand />
-      <main className="workspace">
+      {tab === "report" && step === "photo" && (
+        <section className="desktop-intro" aria-label="Streetlight reporting">
+          <div>
+            <h2>Report a streetlight problem.</h2>
+            <p>Choose a photo and confirm the location.</p>
+            <div className="hero-actions">
+              <button
+                className="primary"
+                onClick={() => document.getElementById("capture")?.focus()}
+              >
+                Get started <ArrowRight size={18} />
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  setTab("map");
+                  if (!location) changeLocation(HOUSTON, "demo");
+                }}
+              >
+                Explore the map <MapIcon size={18} />
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+      <main className="workspace" id="capture" tabIndex={-1}>
         <div className="section-heading">
           <span className="heading-icon">
             {tab === "reports" ? (
@@ -314,15 +329,9 @@ export default function StreetlightApp() {
             )}
           </span>
           <div>
-            <div className="eyebrow">
-              {tab === "report" && step !== "saved"
-                ? "A BRIGHTER BLOCK STARTS WITH YOU"
-                : "STREETLIGHT CHECK"}
-            </div>
             <h1 ref={title} tabIndex={-1}>
               {sectionTitle}
             </h1>
-            <p>{subtitle}</p>
           </div>
         </div>
         {tab === "report" && step !== "saved" && (
@@ -369,17 +378,18 @@ export default function StreetlightApp() {
                 setError("");
               }}
             />
-            <button className="text-button" onClick={() => {
-              setPhoto(null);
-              setHeading(null);
-              setUseHeading(false);
-              setStep("location");
-              setError("");
-            }}>Continue without a photo</button>
-            <div className="location-note">
-              <MapPin size={19} />
-              <span>Next, choose where you saw the streetlight.</span>
-            </div>
+            <button
+              className="text-button"
+              onClick={() => {
+                setPhoto(null);
+                setHeading(null);
+                setUseHeading(false);
+                setStep("location");
+                setError("");
+              }}
+            >
+              Continue without a photo
+            </button>
             <p className="quiet-note">
               <ShieldCheck size={14} />
               Your photo stays on this device. Use the camera only when safely
@@ -392,12 +402,17 @@ export default function StreetlightApp() {
             <div className="demo-banner">
               <Lightbulb size={19} />
               <div>
-                <strong>Sample poles, real practice.</strong>
-                <p>
-                  These are invented demo poles, not CenterPoint assets. Live
-                  data is not connected.
-                </p>
+                <strong>Sample streetlights</strong>
+                <p>Demo data. CenterPoint streetlights are not connected.</p>
               </div>
+              <a
+                className="provider-map-link"
+                href="https://sora.centerpointenergy.com/HOU_Sloreporting/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                CenterPoint map <ExternalLink size={14} />
+              </a>
             </div>
             <div className="action-pair">
               <button
@@ -426,175 +441,177 @@ export default function StreetlightApp() {
                   Confirm the side of the street yourself.
                 </p>
               )}
-            <StreetlightMap
-              location={location ?? HOUSTON}
-              poles={poles}
-              selected={pole?.id ?? null}
-              onPin={(point) => changeLocation(point)}
-              onPole={choosePole}
-            />
-            <div className="manual-location">
-              <label>
-                Nearby address or intersection <span>(optional note)</span>
-                <input
-                  value={address}
-                  maxLength={300}
-                  placeholder="e.g. Main St & Texas Ave"
-                  onChange={(e) => {
-                    setAddress(e.target.value);
-                    setConfirmed(false);
-                  }}
-                />
-              </label>
-              <p className="field-help">
-                Addresses are notes only, not geocoded. Tap the map or enter
-                coordinates to place the pin.
-              </p>
-              <details>
-                <summary>Enter coordinates instead</summary>
-                <div className="coordinate-fields">
+            <div className="map-layout">
+              <StreetlightMap
+                location={location ?? HOUSTON}
+                poles={poles}
+                selected={pole?.id ?? null}
+                onPin={(point) => changeLocation(point)}
+                onPole={choosePole}
+              />
+              <div className="map-controls">
+                <div className="manual-location">
                   <label>
-                    Latitude
+                    Nearby address or intersection <span>(optional note)</span>
                     <input
-                      inputMode="decimal"
-                      value={lat}
+                      value={address}
+                      maxLength={300}
+                      placeholder="e.g. Main St & Texas Ave"
                       onChange={(e) => {
-                        setLat(e.target.value);
+                        setAddress(e.target.value);
                         setConfirmed(false);
                       }}
-                      placeholder="29.760400"
-                    />
-                  </label>
-                  <label>
-                    Longitude
-                    <input
-                      inputMode="decimal"
-                      value={lon}
-                      onChange={(e) => {
-                        setLon(e.target.value);
-                        setConfirmed(false);
-                      }}
-                      placeholder="-95.369800"
-                    />
-                  </label>
-                </div>
-                <button className="secondary" onClick={setCoordinates}>
-                  Set these coordinates
-                </button>
-              </details>
-            </div>
-            {location && (
-              <>
-                <div className="number-evidence">
-                  <label>
-                    Can you read a pole number in your photo?{" "}
-                    <span>(optional)</span>
-                    <input
-                      value={number}
-                      maxLength={80}
-                      onChange={(e) => setNumber(e.target.value)}
-                      placeholder="Enter only a number you can actually read"
                     />
                   </label>
                   <p className="field-help">
-                    We do not analyze images automatically. Entered numbers only
-                    influence the suggestions below.
+                    Addresses are notes only, not geocoded. Tap the map or enter
+                    coordinates to place the pin.
                   </p>
-                  {heading !== null && (
-                    <label className="check-row">
-                      <input
-                        type="checkbox"
-                        checked={useHeading}
-                        onChange={(e) => setUseHeading(e.target.checked)}
-                      />
-                      <Compass size={16} />
-                      Use approximate camera direction ({Math.round(heading)}°).
-                      It may be inaccurate.
-                    </label>
-                  )}
+                  <details>
+                    <summary>Enter coordinates instead</summary>
+                    <div className="coordinate-fields">
+                      <label>
+                        Latitude
+                        <input
+                          inputMode="decimal"
+                          value={lat}
+                          onChange={(e) => {
+                            setLat(e.target.value);
+                            setConfirmed(false);
+                          }}
+                          placeholder="29.760400"
+                        />
+                      </label>
+                      <label>
+                        Longitude
+                        <input
+                          inputMode="decimal"
+                          value={lon}
+                          onChange={(e) => {
+                            setLon(e.target.value);
+                            setConfirmed(false);
+                          }}
+                          placeholder="-95.369800"
+                        />
+                      </label>
+                    </div>
+                    <button className="secondary" onClick={setCoordinates}>
+                      Set these coordinates
+                    </button>
+                  </details>
                 </div>
-                <div className="candidates-heading">
-                  <h2>Possible poles</h2>
-                  <span>YOUR CHOICE REQUIRED</span>
-                </div>
-                <p className="field-help">
-                  {number.trim() && !candidates.some((p) => p.numberMatch)
-                    ? "No demo pole matches that number. "
-                    : " "}
-                  GPS cannot identify an exact pole or street side. All
-                  suggestions need your confirmation.
-                </p>
-                {poleLoading ? (
-                  <p role="status" className="loading">
-                    <LoaderCircle className="spin" size={18} />
-                    Finding demo candidates…
-                  </p>
-                ) : candidates.length ? (
-                  <div className="candidate-list">
-                    {candidates.map((p, i) => (
-                      <button
-                        key={p.id}
-                        className={
-                          "candidate " +
-                          (pole?.id === p.id && confirmed ? "selected" : "")
-                        }
-                        onClick={() => choosePole(p.id)}
-                        aria-pressed={pole?.id === p.id && confirmed}
-                      >
-                        <span className="candidate-number">{i + 1}</span>
-                        <span className="candidate-info">
-                          <strong>
-                            {p.id} <small>DEMO</small>
-                          </strong>
-                          <span>{p.address}</span>
-                          <span>
-                            {p.latitude.toFixed(5)}, {p.longitude.toFixed(5)} ·{" "}
-                            {p.reason}
-                          </span>
-                        </span>
-                        <span className="candidate-distance">
-                          {Math.round(p.distance)} m
-                          {pole?.id === p.id && confirmed ? (
-                            <Check size={19} />
-                          ) : (
-                            <ChevronRight size={18} />
-                          )}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="info">
-                    No sample poles within 750 m of this location. Confirm your
-                    manual pin, or explore the demo area.
+                {location && (
+                  <>
+                    <div className="number-evidence">
+                      <label>
+                        Pole number <span>(optional)</span>
+                        <input
+                          value={number}
+                          maxLength={80}
+                          onChange={(e) => setNumber(e.target.value)}
+                          placeholder="Number visible on the pole"
+                        />
+                      </label>
+                      <p className="field-help">
+                        Optional. Used to match the sample pole list.
+                      </p>
+                      {heading !== null && (
+                        <label className="check-row">
+                          <input
+                            type="checkbox"
+                            checked={useHeading}
+                            onChange={(e) => setUseHeading(e.target.checked)}
+                          />
+                          <Compass size={16} />
+                          Use approximate camera direction (
+                          {Math.round(heading)}°). It may be inaccurate.
+                        </label>
+                      )}
+                    </div>
+                    <div className="candidates-heading">
+                      <h2>Possible poles</h2>
+                      <span>SELECT A POLE</span>
+                    </div>
+                    <p className="field-help">
+                      {number.trim() && !candidates.some((p) => p.numberMatch)
+                        ? "No demo pole matches that number. "
+                        : " "}
+                      GPS cannot identify an exact pole or street side. All
+                      suggestions need your confirmation.
+                    </p>
+                    {poleLoading ? (
+                      <p role="status" className="loading">
+                        <LoaderCircle className="spin" size={18} />
+                        Finding demo candidates…
+                      </p>
+                    ) : candidates.length ? (
+                      <div className="candidate-list">
+                        {candidates.map((p, i) => (
+                          <button
+                            key={p.id}
+                            className={
+                              "candidate " +
+                              (pole?.id === p.id && confirmed ? "selected" : "")
+                            }
+                            onClick={() => choosePole(p.id)}
+                            aria-pressed={pole?.id === p.id && confirmed}
+                          >
+                            <span className="candidate-number">{i + 1}</span>
+                            <span className="candidate-info">
+                              <strong>
+                                {p.id} <small>DEMO</small>
+                              </strong>
+                              <span>{p.address}</span>
+                              <span>
+                                {p.latitude.toFixed(5)},{" "}
+                                {p.longitude.toFixed(5)} · {p.reason}
+                              </span>
+                            </span>
+                            <span className="candidate-distance">
+                              {Math.round(p.distance)} m
+                              {pole?.id === p.id && confirmed ? (
+                                <Check size={19} />
+                              ) : (
+                                <ChevronRight size={18} />
+                              )}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="info">
+                        No sample poles within 750 m of this location. Confirm
+                        your manual pin, or explore the demo area.
+                      </p>
+                    )}
+                    <button
+                      className={
+                        "manual-pin " + (confirmed && !pole ? "selected" : "")
+                      }
+                      onClick={confirmPin}
+                    >
+                      <MapPin size={20} />
+                      <span>
+                        Use this pin without a pole ID
+                        <small>
+                          {location.latitude.toFixed(6)},{" "}
+                          {location.longitude.toFixed(6)}
+                        </small>
+                      </span>
+                      {confirmed && !pole && <Check size={20} />}
+                    </button>
+                  </>
+                )}
+                {confirmed && (
+                  <p role="status" className="success">
+                    <Check size={18} />
+                    {pole
+                      ? `${pole.id} selected. Demo data only.`
+                      : "Manual location confirmed. Pole ID unknown."}
                   </p>
                 )}
-                <button
-                  className={
-                    "manual-pin " + (confirmed && !pole ? "selected" : "")
-                  }
-                  onClick={confirmPin}
-                >
-                  <MapPin size={20} />
-                  <span>
-                    Use this pin without a pole ID
-                    <small>
-                      {location.latitude.toFixed(6)},{" "}
-                      {location.longitude.toFixed(6)}
-                    </small>
-                  </span>
-                  {confirmed && !pole && <Check size={20} />}
-                </button>
-              </>
-            )}
-            {confirmed && (
-              <p role="status" className="success">
-                <Check size={18} />
-                {pole
-                  ? `${pole.id} selected. Demo data only.`
-                  : "Manual location confirmed. Pole ID unknown."}
-              </p>
-            )}
+              </div>
+            </div>
             {tab === "report" ? (
               <div className="step-actions">
                 <button
@@ -628,7 +645,7 @@ export default function StreetlightApp() {
                 }}
               >
                 {" "}
-                {photo ? "Continue your report" : "Take a photo to start"}
+                {photo ? "Continue your report" : "Start a report"}
                 <ArrowRight size={17} />
               </button>
             )}
@@ -637,7 +654,11 @@ export default function StreetlightApp() {
         {tab === "report" && step === "review" && location && (
           <div className="review-content">
             <div className="review-photo">
-              {photo ? <img src={photo} alt="Photo to include with your draft" /> : <p>No photo attached</p>}
+              {photo ? (
+                <img src={photo} alt="Photo to include with your draft" />
+              ) : (
+                <p>No photo attached</p>
+              )}
               <button
                 className="glass-button"
                 onClick={() => setStep("photo")}
@@ -728,7 +749,7 @@ export default function StreetlightApp() {
             <div className="saved-seal">
               <Check size={42} />
             </div>
-            <h2>A step toward a brighter block.</h2>
+            <h2>Saved on this device</h2>
             <p>
               Your draft is saved in this browser.{" "}
               <strong>CenterPoint has not received a report.</strong>
@@ -762,7 +783,7 @@ export default function StreetlightApp() {
                 refresh();
               }}
             >
-              View my drafts
+              View saved drafts
             </button>
             <button className="text-button" onClick={reset}>
               Start another draft
@@ -779,11 +800,8 @@ export default function StreetlightApp() {
             {drafts.length === 0 ? (
               <div className="empty-state">
                 <ClipboardList size={44} />
-                <h2>Your first report starts with a photo.</h2>
-                <p>
-                  Spot a streetlight that needs attention? Keep the details
-                  here.
-                </p>
+                <h2>No saved drafts</h2>
+                <p>Save a draft to find it here later.</p>
                 <button className="primary" onClick={reset}>
                   Start a draft
                   <ArrowRight size={17} />
@@ -792,7 +810,9 @@ export default function StreetlightApp() {
             ) : (
               drafts.map((d) => (
                 <article className="draft-card" key={d.id}>
-                  {d.photo && <img src={d.photo} alt="Saved streetlight photograph" />}
+                  {d.photo && (
+                    <img src={d.photo} alt="Saved streetlight photograph" />
+                  )}
                   <div>
                     <small>DRAFT · NOT SENT</small>
                     <h2>{d.issue}</h2>
@@ -837,7 +857,7 @@ export default function StreetlightApp() {
           [
             { key: "map", label: "Map", icon: MapIcon },
             { key: "report", label: "Report", icon: Camera },
-            { key: "reports", label: "My reports", icon: ClipboardList },
+            { key: "reports", label: "Saved drafts", icon: ClipboardList },
           ] as const
         ).map(({ key, label, icon: Icon }) => (
           <button
@@ -850,6 +870,7 @@ export default function StreetlightApp() {
               setTab(key);
               setError("");
               if (key === "reports") refresh();
+              if (key === "map" && !location) changeLocation(HOUSTON, "demo");
             }}
           >
             <span>
@@ -860,9 +881,6 @@ export default function StreetlightApp() {
           </button>
         ))}
       </nav>
-      <footer className="app-footer">
-        A little light makes a big difference.
-      </footer>
     </div>
   );
 }

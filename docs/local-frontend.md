@@ -1,6 +1,6 @@
 # Run and test Streetlight Check
 
-The camera frontend is integrated with Vercel setup on `codex/vercel-phone-preview-0926`. See [hosting setup](phone-preview.md) and [release comparison](frontend-comparison.md). `/` and `/report` open the Report screen; Map and My reports are tabs in the same draft controller.
+The camera frontend is integrated with Vercel setup on `codex/vercel-phone-preview-0926`. See [hosting setup](phone-preview.md) and [release comparison](frontend-comparison.md). `/` and `/report` open the Report screen; Map and Saved drafts are tabs in the same draft controller.
 
 ## Run locally
 
@@ -29,7 +29,7 @@ npm run dev:https -- --experimental-https-cert certificates/local.pem --experime
 
 Open `https://192.168.1.10:3000` using your actual address. `mkcert -CAROOT` identifies the CA directory: transfer only `rootCA.pem` to your own test phone, never `rootCA-key.pem`. Remove the test CA from the phone when finished. `certificates/` is ignored by Git. Certificate installation is a manual machine/phone setup step, not performed by this feature.
 
-On the phone, test allow/deny camera, front/rear switch, capture, retake, app backgrounding, upload, allow/deny GPS, map pin adjustment, candidate selection, review edits, saving, and reopening My reports. Phone hardware, iOS permissions, compass accuracy and certificate trust still need physical-device verification.
+On the phone, test allow/deny camera, front/rear switch, capture, retake, app backgrounding, upload, allow/deny GPS, map pin adjustment, candidate selection, review edits, saving, and reopening Saved drafts. Phone hardware, iOS permissions, compass accuracy and certificate trust still need physical-device verification.
 
 ## Checks
 
@@ -62,3 +62,10 @@ Browser tests use synthetic images, mocked permission errors and synthetic camer
 ## Next handoffs
 
 Person 1 resolves data-use permission; Person 2 replaces the demo adapter only after approval and adds bounded provider queries; Person 3 refines the draft experience; Person 4 designs authenticated server persistence and a versioned migration from local drafts; Person 5 tests physical devices and reviews camera/photo handling. Any real reporting integration needs written authorization and an actual receipt before the UI can claim delivery.
+
+
+## Desktop layout and local history
+
+At widths of 1000 px and above, the photo screen includes the neighborhood illustration from Person 3's frontend branch. The map and location controls appear in two columns. On phones, the camera remains the first screen and the map controls stack below the map. Opening Map without a location loads the fixed Houston sample area; a pole or pin still needs explicit confirmation.
+
+Saved drafts is browser-local history without accounts. It uses the existing IndexedDB records, so the rename does not delete or migrate drafts. Photos remain local, and clearing browser site data removes saved drafts. The map includes a direct link to CenterPoint's official map; provider records are not imported into the application. See [integration evidence](desktop-map-handoff.md).
