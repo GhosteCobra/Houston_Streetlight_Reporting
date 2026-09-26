@@ -1,6 +1,8 @@
 # Setup and bootstrap plan
 
-**Owners:** Persons 3 and 5; Person 4 owns database setup. The repository currently has documentation only: no package.json, installed dependencies, application scripts, or running app. The framework checker and root .env.example are available.
+> The runnable camera-first frontend uses local drafts. See [current behavior and setup](local-frontend.md); the server/Supabase design below remains proposed.
+
+**Owners:** Persons 3 and 5; Person 4 owns database setup. The camera-first frontend runs locally with npm scripts. The server, Supabase persistence, hosted CI and deployment are still proposed. See [local frontend setup](local-frontend.md).
 
 ## Bootstrap checklist
 

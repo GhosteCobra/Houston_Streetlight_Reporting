@@ -1,5 +1,7 @@
 # Architecture and module boundaries
 
+> The runnable camera-first frontend uses local drafts. See [current behavior and setup](local-frontend.md); the server/Supabase design below remains proposed.
+
 **State:** proposed implementation. Stack details and official references are in the [README](../README.md#recommended-tech-stack).
 
 ## Request flow
@@ -21,7 +23,7 @@ Person 3 owns one report draft in the page/controller. Camera and map components
 
 - `CameraCapture`: receives the current photo selection; emits a selected File or null and recoverable errors. It manages preview cleanup, not report persistence.
 - `StreetlightMap`: receives normalized poles, selected pole ID, and location; emits pole selection and corrected coordinates. Include a list alternative.
-- `ReportForm`: owns issue, description, location confirmation, photo selection, review state, and duplicate warning acknowledgement.
+- `ReportForm`: owns issue, description, location confirmation, photo selection, and review state.
 - `ReportService`: validates, authorizes, and persists one submission using the API contract.
 - `PoleDataSource`: returns normalized poles from synthetic fixtures first and an authorized ArcGIS service later.
 - `ProviderAdapter`: prepares a handoff summary; returns `not_sent` in demo mode. Never silently fall back to a live provider.
