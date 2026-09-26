@@ -39,7 +39,7 @@ These files are checked into the repo. No slash-command support, global installa
 
 ## 2. Build within the project boundaries
 
-The planned stack is Next.js/React/TypeScript, ArcGIS, Supabase and Vercel. This repository currently contains a documentation framework, not a runnable web app.
+The planned stack is Next.js/React/TypeScript, ArcGIS, Supabase and Vercel. The repository now includes a runnable Next.js camera-first frontend with browser-local drafts. Supabase and provider submission remain planned. See docs/local-frontend.md for the implemented boundaries.
 
 - Route Handlers/actions orchestrate authentication, ownership, domain decisions, status transitions, transactions, and user-facing errors.
 - Shared service helpers implement reusable operations such as image normalization, pole distance calculation, or provider SDK calls. Give them explicit inputs and structured results. Do not hide product state mutations or global state in utility helpers.
@@ -60,7 +60,7 @@ git diff --cached --check
 
 The checker validates first-party local links, code fences, JSON examples, and archive file integrity. It does not verify external links, runtime behavior, or licensing rights. Check the diff for accuracy and consistency as well.
 
-There is no package.json or configured application test/build command yet. Do not invent successful npm checks. When the application is scaffolded, update this section with verified install, lint, typecheck, unit/integration, browser-test, and build commands.
+Application checks: `npm ci`, `npm run typecheck`, `npm test`, and `npm run build`. With `npm run dev` running in another terminal, run `npx playwright install chromium` once and `npm run test:e2e`. No lint command is configured. Keep test evidence in ignored `.artifacts/`.
 
 - For bugs, capture the actual failure before fixing it when reproducible. For UI changes, retain before/after screenshots or a recording of the real tested flow. For API/logic changes, use concrete test/probe output. Documentation changes use diff and checker output; no unrelated screen recording is required.
 - Record commit or base commit plus uncommitted-diff state, branch, environment, commands, results, and untested cases. Rerun affected checks after changes or integration.

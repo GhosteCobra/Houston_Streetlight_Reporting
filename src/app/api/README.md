@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Implement the documented pole, location, upload, duplicate, and report endpoints.
+Implement the documented pole, location, upload, and report endpoints.
 
 ## Planned contents
 

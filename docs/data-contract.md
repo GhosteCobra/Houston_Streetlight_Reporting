@@ -1,5 +1,7 @@
 # Shared data contract
 
+> The runnable camera-first frontend uses local drafts. See [current behavior and setup](local-frontend.md); the server/Supabase design below remains proposed.
+
 **Owner:** Person 4, reviewed by Persons 2, 3, and 5. **Version:** proposed v1; implement schemas in `src/lib/schemas/` before integrating modules. Changes require a coordinated PR.
 
 ## Pole

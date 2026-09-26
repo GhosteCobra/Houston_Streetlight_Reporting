@@ -15,7 +15,7 @@ Primary paths: `src/app/ (excluding api/)`, `src/app/report/`, `src/components/r
 1. Scaffold the Next.js/TypeScript application with Person 5 and define the responsive page shell.
 2. Build home/capture entry, draft form, location review, issue selection, and report review.
 3. Integrate map and camera through their documented interfaces rather than duplicating their state.
-4. Add duplicate warnings, field errors, pending submission, retry, and confirmation states.
+4. Add field errors, pending submission, retry, and confirmation states.
 5. Implement accessible labels, keyboard flow, text status, and a usable non-map location option.
 
 ## Dependencies and handoff
