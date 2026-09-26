@@ -19,4 +19,3 @@ Use the [team guides](../../docs/README.md) for dependencies, acceptance criteri
 ## Person 3 implementation
 
 Implemented: Shell, StreetlampIcon, and report UI components. SampleMap is a Person 3 demo component in report/; the map/ and camera/ owner directories remain untouched.
-

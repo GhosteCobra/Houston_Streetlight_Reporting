@@ -19,4 +19,3 @@ Use the [team guides](../../../docs/README.md) for dependencies, acceptance crit
 ## Person 3 implementation
 
 Implemented: page.tsx starts ReportJourney with an optional selected synthetic pole. ReportJourney owns the in-memory draft and waits for the local demo adapter to persist before displaying confirmation. Production API integration remains pending.
-

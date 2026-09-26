@@ -63,4 +63,3 @@ Report owners can retrieve their own records; admin access requires an explicit 
 ## Person 3 preview implementation
 
 The shared report input validation now lives in shared/report.ts. Its ReportInput follows the proposed fields above. A separate DemoReport adds a local_demo mode, a DEMO-prefixed local ID, and provider_delivery_status=not_sent. Local demo records are browser/device previews, not server responses; server ownership and authenticated persistence remain pending. See [Person 3 handoff](person3-handoff.md).
-

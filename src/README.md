@@ -19,4 +19,3 @@ Use the [team guides](../docs/README.md) for dependencies, acceptance criteria, 
 ## Person 3 implementation
 
 Implemented: Next.js App Router in app/, shared report UI in components/report/, and the browser demo store in lib/demo-store.ts. The requested Expo companion lives in mobile/ at the root and shares report types. Run npm run dev; see docs/person3-handoff.md.
-

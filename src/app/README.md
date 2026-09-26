@@ -19,4 +19,3 @@ Use the [team guides](../../docs/README.md) for dependencies, acceptance criteri
 ## Person 3 implementation
 
 Implemented routes: /, /map, /report and /reports. The report route owns photo, details, review and confirmation states. Server API routes remain for Person 4.
-

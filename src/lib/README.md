@@ -19,4 +19,3 @@ Use the [team guides](../../docs/README.md) for dependencies, acceptance criteri
 ## Person 3 implementation
 
 Implemented: demo-store.ts is a browser-local adapter only. Shared browser/native validation lives at shared/report.ts in the repository root. No server API or persistence service is implemented.
-

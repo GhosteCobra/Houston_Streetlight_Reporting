@@ -19,4 +19,3 @@ Use the [team guides](../../../docs/README.md) for dependencies, acceptance crit
 ## Person 3 implementation
 
 Implemented: ReportJourney provides optional photo preview, manual/GPS location, issue selection, duplicate acknowledgement, review and local confirmation. SampleMap receives typed poles and emits selection events.
-

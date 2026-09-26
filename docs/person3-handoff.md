@@ -2,7 +2,7 @@
 
 Owner: Person 3, frontend/UI. Git commit identity: Charan Sai Saragadam.
 Task branch: `codex/person3-streetlight-check-0925`.
-Base: `24936b1` on main; develop did not exist at task start. No open PRs were returned by the repository overlap check.
+Initial base: `24936b1` on main. Teammate exporter updates through `0aefce6` were merged into this branch before final verification; develop did not exist at task start. No open PRs were returned by the repository overlap check.
 
 The current user request explicitly selects a Next.js + Tailwind web application alongside React Native + Expo + Expo Router + TypeScript. It supersedes the older mobile-only pasted handoff. This branch keeps the main web application in the planned `src/` structure and puts the native companion in the `mobile/` npm workspace. Both consume `shared/report.ts` and one root lockfile.
 
