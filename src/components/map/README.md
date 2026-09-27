@@ -1,6 +1,6 @@
 # ArcGIS map and pole picker
 
-**Owner:** Person 2. **Status:** documentation placeholder; implementation pending.
+**Owner:** Person 2. **Status:** demo report map plus fixed-area CenterPoint preview.
 
 ## Purpose
 
@@ -8,7 +8,7 @@ Display normalized poles, map condition legend, candidate details, and manual co
 
 ## Planned contents
 
-Future StreetlightMap and PoleList components.
+`StreetlightMap.tsx` renders normalized coordinates in a browser-only ArcGIS view. The report flow supplies demo poles. `/centerpoint-preview` supplies a small live CenterPoint result and enables facility ID labels.
 
 ## Working rules
 

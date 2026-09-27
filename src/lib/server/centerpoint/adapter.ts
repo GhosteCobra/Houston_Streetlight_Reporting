@@ -1,4 +1,4 @@
-/** Research-only adapter. Do not wire into public routes without CenterPoint's approval. */
+/** Read-only provider adapter. Keep CenterPoint queries on the server. */
 export const CENTERPOINT_STREETLIGHT_LAYER =
   "https://sora.centerpointenergy.com/arcgis/rest/services/SORA/SLO_REPORTING_HOU_MERCATOR/MapServer/0";
 

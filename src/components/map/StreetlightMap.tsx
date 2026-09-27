@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import type { Coordinates, Pole } from "@/lib/report/model";
+import type { Coordinates } from "@/lib/report/model";
 import { MapPin, LoaderCircle } from "lucide-react";
 import type MapView from "@arcgis/core/views/MapView";
 export default function StreetlightMap({
@@ -9,12 +9,20 @@ export default function StreetlightMap({
   selected,
   onPin,
   onPole,
+  showPoleIds = false,
+  zoom = 17,
+  badge = "DEMO POLES",
+  hint = "Select a streetlight or place a pin.",
 }: {
   location: Coordinates;
-  poles: Pole[];
+  poles: { id: string; latitude: number; longitude: number; label?: string }[];
   selected: string | null;
-  onPin: (point: Coordinates) => void;
+  onPin?: (point: Coordinates) => void;
   onPole: (id: string) => void;
+  showPoleIds?: boolean;
+  zoom?: number;
+  badge?: string;
+  hint?: string;
 }) {
   const container = useRef<HTMLDivElement>(null),
     view = useRef<MapView | null>(null),
@@ -39,7 +47,7 @@ export default function StreetlightMap({
           container: container.current,
           map: new Map({ basemap: "osm" }),
           center: [location.longitude, location.latitude],
-          zoom: 17,
+          zoom,
           ui: { components: ["zoom", "attribution"] },
           constraints: { minZoom: 3, snapToZoom: false },
         });
@@ -55,7 +63,7 @@ export default function StreetlightMap({
           );
           if (found && found.type === "graphic") {
             callbacks.current.onPole(found.graphic.attributes.poleId);
-          } else if (e.mapPoint) {
+          } else if (e.mapPoint && callbacks.current.onPin) {
             callbacks.current.onPin({
               latitude: e.mapPoint.latitude!,
               longitude: e.mapPoint.longitude!,
@@ -87,13 +95,11 @@ export default function StreetlightMap({
       ]);
       if (cancelled || !view.current) return;
       view.current.graphics.removeAll();
-      for (const pole of poles)
+      for (const pole of poles) {
+        const point = new Point({ latitude: pole.latitude, longitude: pole.longitude });
         view.current.graphics.add(
           new Graphic({
-            geometry: new Point({
-              latitude: pole.latitude,
-              longitude: pole.longitude,
-            }),
+            geometry: point,
             attributes: { poleId: pole.id },
             symbol: {
               type: "simple-marker",
@@ -103,6 +109,24 @@ export default function StreetlightMap({
             },
           }),
         );
+        if (showPoleIds) {
+          view.current.graphics.add(
+            new Graphic({
+              geometry: point,
+              attributes: { poleId: pole.id },
+              symbol: {
+                type: "text",
+                text: pole.label ?? pole.id,
+                color: "#09224e",
+                haloColor: "#ffffff",
+                haloSize: 2,
+                yoffset: 18,
+                font: { size: 11, weight: "bold" },
+              },
+            }),
+          );
+        }
+      }
       view.current.graphics.add(
         new Graphic({
           geometry: new Point({
@@ -128,13 +152,13 @@ export default function StreetlightMap({
     return () => {
       cancelled = true;
     };
-  }, [location.latitude, location.longitude, poles, selected, ready]);
+  }, [location.latitude, location.longitude, poles, selected, ready, showPoleIds]);
   return (
     <div className="map-shell">
       <div
         ref={container}
         className="arcgis-map"
-        aria-label="Demo pole map. Tap the map to move the location pin."
+        aria-label={showPoleIds ? "CenterPoint streetlight map with facility ID labels" : "Demo pole map. Tap the map to move the location pin."}
       />
       {!ready && !error && (
         <div className="map-loading" role="status">
@@ -147,10 +171,10 @@ export default function StreetlightMap({
           {error}
         </p>
       )}
-      <span className="map-demo">DEMO POLES</span>
+      <span className="map-demo">{badge}</span>
       <div className="map-hint">
         <MapPin size={14} />
-        Select a streetlight or place a pin.
+        {hint}
       </div>
     </div>
   );

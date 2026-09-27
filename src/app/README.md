@@ -1,6 +1,6 @@
 # Application routes
 
-**Owner:** Person 3; Person 4 owns api/. **Status:** documentation placeholder; implementation pending.
+**Owner:** Person 3; Person 4 owns api/. **Status:** demo report journey and read-only GIS preview.
 
 ## Purpose
 
@@ -8,7 +8,7 @@ Home page, root layout, reporting journey, and HTTP Route Handlers.
 
 ## Planned contents
 
-Future layout.tsx and page.tsx; report/ journey; api/ server endpoints.
+`page.tsx` opens the demo report journey. `centerpoint-preview/page.tsx` server-renders a fixed downtown test area through the CenterPoint adapter and reuses the map without changing report submission.
 
 ## Working rules
 
