@@ -2,7 +2,7 @@
 
 > The runnable camera-first frontend uses local drafts. See [current behavior and setup](local-frontend.md); the server/Supabase design below remains proposed.
 
-**Owner:** Person 4. No API routes exist yet. Implement and test this contract before replacing frontend mocks. All endpoints are same-origin Next.js Route Handlers; verify the session server-side.
+**Owner:** Person 4. The preview implements read-only `GET /api/centerpoint/nearby?latitude=…&longitude=…`, with a fixed 25 m radius, cached provider queries, and 400/429/503 errors. See [CenterPoint integration](centerpoint-integration.md). The general APIs below remain proposed. Implement and test this contract before replacing frontend mocks. All endpoints are same-origin Next.js Route Handlers; verify the session server-side.
 
 | Endpoint | Input | Result |
 | --- | --- | --- |

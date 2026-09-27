@@ -8,7 +8,7 @@ Home page, root layout, reporting journey, and HTTP Route Handlers.
 
 ## Planned contents
 
-`page.tsx` opens the demo report journey. `centerpoint-preview/page.tsx` server-renders a fixed downtown test area through the CenterPoint adapter and reuses the map without changing report submission.
+`page.tsx` opens the demo report journey. `centerpoint-preview/page.tsx` server-renders a browsable CenterPoint map with bounded tap inspection and local photo/report preparation followed by the official form handoff.
 
 ## Working rules
 
