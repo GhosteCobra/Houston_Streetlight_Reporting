@@ -9,17 +9,19 @@ export default function StreetlightMap({
   selected,
   onPin,
   onPole,
+  interactive = true,
 }: {
   location: Coordinates;
   poles: Pole[];
   selected: string | null;
   onPin: (point: Coordinates) => void;
   onPole: (id: string) => void;
+  interactive?: boolean;
 }) {
   const container = useRef<HTMLDivElement>(null),
     view = useRef<MapView | null>(null),
-    callbacks = useRef({ onPin, onPole });
-  callbacks.current = { onPin, onPole };
+    callbacks = useRef({ onPin, onPole, interactive });
+  callbacks.current = { onPin, onPole, interactive };
   const [ready, setReady] = useState(false),
     [error, setError] = useState("");
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function StreetlightMap({
         if (disposed) return;
         setReady(true);
         owned.on("click", async (e) => {
+          if (!callbacks.current.interactive) return;
           const hit = await owned!.hitTest(e);
           if (disposed) return;
           const found = hit.results.find(
@@ -87,7 +90,7 @@ export default function StreetlightMap({
       ]);
       if (cancelled || !view.current) return;
       view.current.graphics.removeAll();
-      for (const pole of poles)
+      for (const pole of interactive ? poles : [])
         view.current.graphics.add(
           new Graphic({
             geometry: new Point({
@@ -103,21 +106,22 @@ export default function StreetlightMap({
             },
           }),
         );
-      view.current.graphics.add(
-        new Graphic({
-          geometry: new Point({
-            latitude: location.latitude,
-            longitude: location.longitude,
+      if (interactive)
+        view.current.graphics.add(
+          new Graphic({
+            geometry: new Point({
+              latitude: location.latitude,
+              longitude: location.longitude,
+            }),
+            symbol: {
+              type: "simple-marker",
+              style: "cross",
+              color: "#198799",
+              size: 20,
+              outline: { color: "#198799", width: 3 },
+            },
           }),
-          symbol: {
-            type: "simple-marker",
-            style: "cross",
-            color: "#198799",
-            size: 20,
-            outline: { color: "#198799", width: 3 },
-          },
-        }),
-      );
+        );
       view.current
         .goTo(
           { center: [location.longitude, location.latitude] },
@@ -128,13 +132,24 @@ export default function StreetlightMap({
     return () => {
       cancelled = true;
     };
-  }, [location.latitude, location.longitude, poles, selected, ready]);
+  }, [
+    location.latitude,
+    location.longitude,
+    poles,
+    selected,
+    ready,
+    interactive,
+  ]);
   return (
     <div className="map-shell">
       <div
         ref={container}
         className="arcgis-map"
-        aria-label="Demo pole map. Tap the map to move the location pin."
+        aria-label={
+          interactive
+            ? "Demo pole map. Tap the map to move the location pin."
+            : "Sample map of Houston."
+        }
       />
       {!ready && !error && (
         <div className="map-loading" role="status">
@@ -147,11 +162,13 @@ export default function StreetlightMap({
           {error}
         </p>
       )}
-      <span className="map-demo">DEMO POLES</span>
-      <div className="map-hint">
-        <MapPin size={14} />
-        Select a streetlight or place a pin.
-      </div>
+      <span className="map-demo">SAMPLE MAP</span>
+      {interactive && (
+        <div className="map-hint">
+          <MapPin size={14} />
+          Select a streetlight or place a pin.
+        </div>
+      )}
     </div>
   );
 }

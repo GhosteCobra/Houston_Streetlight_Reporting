@@ -10,28 +10,22 @@ export default function StreetlightSuggestion({
   onChooseAnother: () => void;
 }) {
   return (
-    <section className="streetlight-suggestion" aria-label="Suggested streetlight">
-      <h2>Is this the streetlight you're reporting?</h2>
+    <section
+      className="streetlight-suggestion"
+      aria-label="Suggested streetlight"
+    >
+      <span className="suggestion-label">Suggested nearby · Demo</span>
+      <h2>{candidate.id}</h2>
       <p>
-        We found this sample streetlight near your location. Please check it yourself.
+        {Math.round(candidate.distance)} m away. Check the pole or map before
+        confirming.
       </p>
-      <strong>{candidate.id} · DEMO</strong>
-      <p>
-        About {Math.round(candidate.distance)} m from your location
-        <br />
-        {candidate.address}
-      </p>
-      <p className="field-help">
-        {candidate.latitude.toFixed(6)}, {candidate.longitude.toFixed(6)}
-        <br />
-        {candidate.reason}. GPS proximity does not identify the correct light.
-      </p>
-      <div className="action-pair">
+      <div className="suggestion-actions">
         <button className="primary" onClick={onConfirm}>
-          Confirm Streetlight
+          Confirm streetlight
         </button>
-        <button className="secondary" onClick={onChooseAnother}>
-          Choose Another
+        <button className="text-button" onClick={onChooseAnother}>
+          Choose another
         </button>
       </div>
     </section>
