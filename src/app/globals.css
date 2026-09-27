@@ -1782,3 +1782,15 @@ h2 {
 @media (max-width: 720px) { .cp-browse-layout .cp-live-map { height: 460px; } }
 
 .centerpoint-preview .centerpoint-workspace { max-width: none; }
+
+.map-layer-controls { position: absolute; top: 12px; right: 12px; z-index: 3; display: flex; padding: 4px; gap: 3px; border: 1px solid #d4d6e1; border-radius: 10px; background: #ffffffed; box-shadow: 0 2px 10px #14234125; }
+.map-layer-controls button { border: 0; border-radius: 6px; background: transparent; padding: 9px 11px; font-size: 12px; font-weight: 700; min-height: 44px; }
+.map-layer-controls button[aria-pressed="true"] { background: #09224e; color: white; }
+.map-shell > .map-loading { z-index: 2; pointer-events: none; }
+
+.map-coverage-button { position: absolute; top: 76px; right: 12px; z-index: 3; background: #fffffff0; border: 1px solid #d4d6e1; border-radius: 8px; padding: 8px 12px; min-height: 44px; font-size: 12px; font-weight: 700; }
+.map-only .map-hint { bottom: 86px; }
+
+.map-3d-pending { position: absolute; inset: 135px 16px auto; z-index: 4; padding: 16px; background: white; border: 1px solid #d4d6e1; border-radius: 12px; box-shadow: 0 4px 18px #14234130; font-size: 13px; }
+.map-3d-pending p { margin: 8px 0 12px; }
+.map-3d-pending button { min-height: 44px; padding: 8px 12px; border: 0; border-radius: 6px; color: white; background: #09224e; }
