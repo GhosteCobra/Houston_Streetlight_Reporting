@@ -28,3 +28,5 @@ Use `{error: {code, message, fields?}}`. Do not include tokens, storage credenti
 5. Never call the utility in demo mode. Return `provider_delivery_status=not_sent`.
 
 The browser uploads bytes to the authorized storage URL, then completes validation before creating a report. Do not route large binary uploads through the report JSON endpoint. Cleanup of failed/unclaimed uploads belongs to the server storage module.
+
+The main report UI now uses the same bounded `GET /api/centerpoint/nearby` route as the research preview. Its query remains a fixed 25 m radius with a 50-record limit, WGS84 normalization, one-minute instance cache and 60 requests per minute per instance. No full regional dataset is fetched or committed. Requests outside the Houston region, service failures and incomplete results produce recoverable errors rather than demo poles. Distributed traffic limits remain future work for a larger public rollout.

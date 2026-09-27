@@ -32,7 +32,11 @@ import {
   type Pole,
   type Draft,
 } from "@/lib/report/model";
-import { poleAdapter, rankPoles } from "@/lib/arcgis/poles";
+import {
+  centerPointAdapter as poleAdapter,
+  rankPoles,
+  poleLabel,
+} from "@/lib/arcgis/poles";
 import { listDrafts, saveDraft, deleteDraft } from "@/lib/report/storage";
 const StreetlightMap = dynamic(() => import("../map/StreetlightMap"), {
   ssr: false,
@@ -117,10 +121,12 @@ export default function StreetlightApp() {
       .then((nextPoles) => {
         if (!controller.signal.aborted) setPoles(nextPoles);
       })
-      .catch(() => {
+      .catch((cause) => {
         if (!controller.signal.aborted)
           setPoleError(
-            "Streetlight lookup failed. Try again or confirm a manual pin.",
+            cause instanceof Error
+              ? cause.message
+              : "Streetlight details are unavailable.",
           );
       })
       .finally(() => {
@@ -243,7 +249,17 @@ export default function StreetlightApp() {
     setAddress(d.location.address);
     setLat(d.location.latitude.toFixed(6));
     setLon(d.location.longitude.toFixed(6));
-    setPole(d.poleId ? { id: d.poleId, ...d.location, source: "demo" } : null);
+    setPole(
+      d.poleId
+        ? {
+            id: d.poleId,
+            ...d.location,
+            source: d.dataSource,
+            facilityId: d.facilityId,
+            fixtureWattage: d.fixtureWattage,
+          }
+        : null,
+    );
     setConfirmed(true);
     setIssue(d.issue);
     setDescription(d.description);
@@ -278,7 +294,9 @@ export default function StreetlightApp() {
       description: description.trim(),
       status: "draft",
       providerDelivery: "not_sent",
-      dataSource: "demo",
+      dataSource: pole?.source ?? "centerpoint",
+      facilityId: pole?.facilityId ?? null,
+      fixtureWattage: pole?.fixtureWattage ?? null,
       poleNumberEvidence: number,
       heading: useHeading ? heading : null,
     };
@@ -425,8 +443,8 @@ export default function StreetlightApp() {
           <div className="location-content">
             <div className="demo-banner">
               <div>
-                <strong>Sample map</strong>
-                <p>Demo poles. No utility data is connected.</p>
+                <strong>CenterPoint streetlights</strong>
+                <p>Pole locations from CenterPoint Energy.</p>
               </div>
               <a
                 className="provider-map-link"
@@ -539,7 +557,7 @@ export default function StreetlightApp() {
                     !poleError &&
                     !confirmed &&
                     tab === "report" &&
-                    !!photo &&
+                    step === "location" &&
                     candidates[0] && (
                       <StreetlightSuggestion
                         candidate={candidates[0]}
@@ -631,7 +649,8 @@ export default function StreetlightApp() {
                                 />
                               </label>
                               <p className="field-help">
-                                Optional. Used to match the sample pole list.
+                                Optional backup if you can read the number on
+                                the pole.
                               </p>
                               {heading !== null && (
                                 <label className="check-row">
@@ -663,14 +682,14 @@ export default function StreetlightApp() {
                             <p className="field-help">
                               {number.trim() &&
                               !candidates.some((p) => p.numberMatch)
-                                ? "No demo pole matches that number. "
+                                ? "No nearby pole matches that number. "
                                 : " "}
-                              Select a marker or another sample pole.
+                              Select a marker or another nearby pole.
                             </p>
                             {poleLoading ? (
                               <p role="status" className="loading">
                                 <LoaderCircle className="spin" size={18} />
-                                Finding demo candidates…
+                                Finding nearby streetlights…
                               </p>
                             ) : candidates.length ? (
                               <div className="candidate-list">
@@ -693,7 +712,12 @@ export default function StreetlightApp() {
                                     </span>
                                     <span className="candidate-info">
                                       <strong>
-                                        {p.id} <small>DEMO</small>
+                                        {poleLabel(p)}{" "}
+                                        <small>
+                                          {p.source === "centerpoint"
+                                            ? "CenterPoint"
+                                            : "DEMO"}
+                                        </small>
                                       </strong>
                                       <span>{p.address}</span>
                                       <span>
@@ -714,9 +738,9 @@ export default function StreetlightApp() {
                               </div>
                             ) : !poleError ? (
                               <p className="info">
-                                No sample poles within 750 m of this location.
-                                Confirm your manual pin, or explore the demo
-                                area.
+                                No published poles within 25 m of this location.
+                                Tap closer to a streetlight or confirm your map
+                                pin.
                               </p>
                             ) : null}
                           </details>
@@ -745,7 +769,7 @@ export default function StreetlightApp() {
                     <p role="status" className="success">
                       <Check size={18} />
                       {pole
-                        ? `${pole.id} selected. Demo data only.`
+                        ? `${poleLabel(pole)} selected.`
                         : "Manual location confirmed. Pole ID unknown."}
                     </p>
                   )}
@@ -801,13 +825,17 @@ export default function StreetlightApp() {
               <MapPin />
               <div>
                 <strong>
-                  {pole?.id ?? "Manual location · pole ID unknown"}
+                  {pole ? poleLabel(pole) : "Manual location · pole ID unknown"}
                 </strong>
                 <p>{address || pole?.address || "Address not provided"}</p>
                 <small>
                   {(pole?.latitude ?? location.latitude).toFixed(6)},{" "}
                   {(pole?.longitude ?? location.longitude).toFixed(6)} ·{" "}
-                  {pole ? "Demo pole" : "Confirmed pin"}
+                  {pole
+                    ? pole.source === "centerpoint"
+                      ? "CenterPoint"
+                      : "Demo pole"
+                    : "Confirmed pin"}
                 </small>
               </div>
               <button
@@ -886,7 +914,11 @@ export default function StreetlightApp() {
             </p>
             <div className="saved-summary">
               <span>LOCAL DRAFT</span>
-              <strong>{saved.poleId ?? "Manually selected location"}</strong>
+              <strong>
+                {saved.dataSource === "centerpoint"
+                  ? (saved.facilityId ?? "Manually selected location")
+                  : (saved.poleId ?? "Manually selected location")}
+              </strong>
               <p>
                 {saved.issue} · {saved.location.latitude.toFixed(5)},{" "}
                 {saved.location.longitude.toFixed(5)}
@@ -904,7 +936,7 @@ export default function StreetlightApp() {
             </a>
             <p className="field-help">
               Opens the official website. Nothing is transferred automatically.
-              Demo pole IDs must not be used as real utility IDs.
+              Confirm the pole number in the official form.
             </p>
             <button
               className="secondary full"
@@ -945,8 +977,10 @@ export default function StreetlightApp() {
                     <small>DRAFT · NOT SENT</small>
                     <h2>{d.issue}</h2>
                     <p>
-                      {d.poleId ?? "Manual location"} ·{" "}
-                      {new Date(d.savedAt).toLocaleDateString()}
+                      {d.dataSource === "centerpoint"
+                        ? (d.facilityId ?? "Manual location")
+                        : (d.poleId ?? "Manual location")}{" "}
+                      · {new Date(d.savedAt).toLocaleDateString()}
                     </p>
                     <button className="text-button" onClick={() => edit(d)}>
                       Review & edit

@@ -12,7 +12,7 @@ Issue selection, field errors, report summary, and status presentation.
 - `StreetlightSuggestion.tsx` presents a ranked candidate and emits confirmation or a request to use the existing candidate list. It does not query data or own report state.
 - `Brand.tsx` renders the application branding.
 
-Accepting a usable photo starts GPS. The controller calls the existing `PoleDataAdapter.nearby` and `rankPoles` functions. Suggestions require resident confirmation; a photo's pixels do not establish its streetlight ID. See the [Person 5 handoff](../../../docs/photo-identification-handoff.md).
+Accepting a usable photo starts GPS. The controller calls the bounded CenterPoint `PoleDataAdapter.nearby` and `rankPoles` functions. Suggestions require resident confirmation; a photo's pixels do not establish its streetlight ID. See the [Person 5 handoff](../../../docs/photo-identification-handoff.md).
 
 ## Working rules
 

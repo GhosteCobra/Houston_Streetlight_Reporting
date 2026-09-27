@@ -1,4 +1,4 @@
-import type { rankPoles } from "@/lib/arcgis/poles";
+import { poleLabel, type rankPoles } from "@/lib/arcgis/poles";
 
 export default function StreetlightSuggestion({
   candidate,
@@ -14,8 +14,8 @@ export default function StreetlightSuggestion({
       className="streetlight-suggestion"
       aria-label="Suggested streetlight"
     >
-      <span className="suggestion-label">Suggested nearby · Demo</span>
-      <h2>{candidate.id}</h2>
+      <span className="suggestion-label">Nearby streetlight</span>
+      <h2>{poleLabel(candidate)}</h2>
       <p>
         {Math.round(candidate.distance)} m away. Check the pole or map before
         confirming.

@@ -12,7 +12,9 @@ export type Location = Coordinates & {
 export type Pole = Coordinates & {
   id: string;
   address: string;
-  source: "demo";
+  source: "demo" | "centerpoint";
+  facilityId?: string | null;
+  fixtureWattage?: string | null;
 };
 export const issues = [
   "Light out",
@@ -25,7 +27,10 @@ export const issues = [
 export const draftSchema = z.object({
   id: z.string(),
   savedAt: z.string(),
-  photo: z.string().regex(/^data:image\/(jpeg|png|webp);base64,/).nullable(),
+  photo: z
+    .string()
+    .regex(/^data:image\/(jpeg|png|webp);base64,/)
+    .nullable(),
   location: coordinateSchema.extend({
     accuracy: z.number().nullable(),
     source: z.enum(["gps", "manual", "demo"]),
@@ -36,7 +41,9 @@ export const draftSchema = z.object({
   description: z.string().max(2000),
   status: z.literal("draft"),
   providerDelivery: z.literal("not_sent"),
-  dataSource: z.literal("demo"),
+  dataSource: z.enum(["demo", "centerpoint"]),
+  facilityId: z.string().nullable().optional(),
+  fixtureWattage: z.string().nullable().optional(),
   poleNumberEvidence: z.string().max(80),
   heading: z.number().min(0).max(360).nullable(),
 });

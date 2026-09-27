@@ -6,4 +6,4 @@ Person 3 owns draft orchestration; Persons 4 and 5 review schema, persistence an
 - `photo.ts`: decode, validate and normalize images in the browser.
 - `storage.ts`: explicit IndexedDB operations, including updates and deletion.
 
-These modules implement browser-local demo drafts. They do not upload photos or implement the planned Supabase API. See [runtime contracts](../../../docs/local-frontend.md#current-behavior-and-contracts).
+These modules implement browser-local drafts with separate CenterPoint facility IDs and GIS keys. They do not upload photos or implement the planned Supabase API. See [runtime contracts](../../../docs/local-frontend.md#current-behavior-and-contracts).

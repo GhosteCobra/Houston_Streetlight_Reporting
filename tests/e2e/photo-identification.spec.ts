@@ -1,7 +1,8 @@
-import { test, expect, type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { test, expect } from "./provider-fixture";
 
 const photo = {
-  name: "DEMO-photo.png",
+  name: "TEST-photo.png",
   mimeType: "image/png",
   buffer: Buffer.from(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
@@ -30,7 +31,7 @@ test("accepted photo requests GPS, suggests nearest light, and saves confirmed l
   const suggestion = page.getByRole("region", {
     name: "Suggested streetlight",
   });
-  await expect(suggestion).toContainText("DEMO-102");
+  await expect(suggestion).toContainText("TEST-102");
   await expect(suggestion).toContainText("27 m away");
   await expect(
     page.getByText("GPS accuracy: about ±8 m.", { exact: false }),
@@ -52,7 +53,7 @@ test("accepted photo requests GPS, suggests nearest light, and saves confirmed l
   await expect(
     page.getByAltText("Photo to include with your draft"),
   ).toBeVisible();
-  await expect(page.locator(".review-location")).toContainText("DEMO-102");
+  await expect(page.locator(".review-location")).toContainText("TEST-102");
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Draft saved", exact: true }),
@@ -60,7 +61,7 @@ test("accepted photo requests GPS, suggests nearest light, and saves confirmed l
   await page.reload();
   await page.getByRole("button", { name: /^Saved/ }).click();
   await page.getByRole("button", { name: "Review & edit" }).click();
-  await expect(page.locator(".review-location")).toContainText("DEMO-102");
+  await expect(page.locator(".review-location")).toContainText("TEST-102");
   await expect(page.locator(".review-location")).toContainText(
     "29.760180, -95.369690",
   );
@@ -81,9 +82,9 @@ test("choose another uses the existing list and changing location clears confirm
   await expect(
     page.getByRole("heading", { name: "Other streetlights" }),
   ).toBeFocused();
-  await page.getByRole("button", { name: /DEMO-104/ }).click();
+  await page.getByRole("button", { name: /TEST-104/ }).click();
   await page.getByRole("button", { name: "Review report" }).click();
-  await expect(page.locator(".review-location")).toContainText("DEMO-104");
+  await expect(page.locator(".review-location")).toContainText("TEST-104");
   await page
     .locator(".review-location")
     .getByRole("button", { name: "Edit", exact: true })
@@ -135,7 +136,7 @@ for (const [code, message] of [
       .getByText("Choose a different streetlight", { exact: true })
       .click();
     await expect(
-      page.getByText("No sample poles within 750 m", { exact: false }),
+      page.getByText("No published poles within 25 m", { exact: false }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Confirm this map pin" }).click();
     await page.getByRole("button", { name: "Review report" }).click();
@@ -170,7 +171,7 @@ test("late GPS does not replace an explicitly selected manual location", async (
     (window as Window & { completeGPS?: () => void }).completeGPS?.(),
   );
   await page.getByRole("button", { name: "Review report" }).click();
-  await expect(page.locator(".review-location")).toContainText("DEMO-102");
+  await expect(page.locator(".review-location")).toContainText("TEST-102");
 });
 
 test("replacement photo clears an old confirmation; remove and no-photo still work", async ({
@@ -202,7 +203,7 @@ test("replacement photo clears an old confirmation; remove and no-photo still wo
   await page
     .getByText("Choose a different streetlight", { exact: true })
     .click();
-  await page.getByRole("button", { name: /DEMO-102/ }).click();
+  await page.getByRole("button", { name: /TEST-102/ }).click();
   await page.getByRole("button", { name: "Review report" }).click();
   await expect(page.getByText("No photo attached")).toBeVisible();
 });
@@ -233,7 +234,7 @@ test("photo validation rejects unsupported and corrupt files without starting GP
     "could not be read",
   );
   await page.getByLabel("Choose streetlight photo").setInputFiles({
-    name: "DEMO-large.png",
+    name: "TEST-large.png",
     mimeType: "image/png",
     buffer: Buffer.alloc(10 * 1024 * 1024 + 1),
   });
@@ -286,5 +287,5 @@ test("synthetic camera capture, retake, and preview still lead to GPS confirmati
   await page.getByRole("button", { name: "Use this photo" }).click();
   await expect(
     page.getByRole("region", { name: "Suggested streetlight" }),
-  ).toContainText("DEMO-102");
+  ).toContainText("TEST-102");
 });

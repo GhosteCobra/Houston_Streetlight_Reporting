@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./provider-fixture";
 const photo = {
   name: "sample.png",
   mimeType: "image/png",
@@ -37,7 +37,7 @@ test("Photo to confirmed demo pole to local draft; edit and reload; no utility s
 }) => {
   const providerRequests: string[] = [];
   page.on("request", (r) => {
-    if (r.url().includes("centerpointenergy.com"))
+    if (r.method() !== "GET" && r.url().includes("centerpointenergy.com"))
       providerRequests.push(r.url());
   });
   await page.goto("/");
@@ -52,7 +52,7 @@ test("Photo to confirmed demo pole to local draft; edit and reload; no utility s
   await page
     .getByText("Choose a different streetlight", { exact: true })
     .click();
-  await page.getByRole("button", { name: /DEMO-101/ }).click();
+  await page.getByRole("button", { name: /TEST-101/ }).click();
   await page.getByRole("button", { name: "Review report" }).click();
   await page.getByLabel("Anything else").fill("Test draft only");
   await page.getByRole("button", { name: "Save draft" }).click();
@@ -107,7 +107,7 @@ test("Denied GPS, bad coordinates, and confirmed manual pin", async ({
     .getByText("Choose a different streetlight", { exact: true })
     .click();
   await expect(
-    page.getByText("No sample poles within 750 m", { exact: false }),
+    page.getByText("No published poles within 25 m", { exact: false }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Confirm this map pin" }).click();
   await page.getByRole("button", { name: "Review report" }).click();
@@ -160,7 +160,7 @@ test("No-photo draft can be saved, reopened, and edited", async ({ page }) => {
   await page
     .getByText("Choose a different streetlight", { exact: true })
     .click();
-  await page.getByRole("button", { name: /DEMO-101/ }).click();
+  await page.getByRole("button", { name: /TEST-101/ }).click();
   await page.getByRole("button", { name: "Review report" }).click();
   await expect(page.getByText("No photo attached")).toBeVisible();
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
@@ -247,10 +247,48 @@ test("Desktop starts with a full map and uploads a photo beside it", async ({
   await page.getByLabel("Upload streetlight image").setInputFiles(photo);
   await expect(
     page.getByRole("region", { name: "Suggested streetlight" }),
-  ).toContainText("DEMO-102");
+  ).toContainText("TEST-102");
   await page.getByRole("button", { name: "Confirm streetlight" }).click();
   await page.getByRole("button", { name: "Review report" }).click();
   await expect(
     page.getByAltText("Photo to include with your draft"),
+  ).toBeVisible();
+});
+
+test("Provider outage preserves photo and manual reporting without demo substitution", async ({
+  page,
+}) => {
+  await page.route("**/api/centerpoint/nearby?**", (route) =>
+    route.fulfill({
+      status: 503,
+      json: {
+        error: {
+          message:
+            "CenterPoint details are unavailable. Please try again shortly.",
+        },
+      },
+    }),
+  );
+  await page.goto("/");
+  await upload(page);
+  await page.getByRole("button", { name: "Reset map to Houston" }).click();
+  await expect(
+    page.getByText(
+      "CenterPoint details are unavailable. Please try again shortly.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Suggested streetlight" }),
+  ).toHaveCount(0);
+  await page
+    .getByText("Need to correct the location or pole?", { exact: true })
+    .click();
+  await page.getByRole("button", { name: "Confirm this map pin" }).click();
+  await page.getByRole("button", { name: "Review report" }).click();
+  await expect(
+    page.getByAltText("Photo to include with your draft"),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Manual location · pole ID unknown"),
   ).toBeVisible();
 });

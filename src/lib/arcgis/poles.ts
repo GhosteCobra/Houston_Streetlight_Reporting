@@ -97,7 +97,9 @@ export function rankPoles(
     .map((p) => {
       const distance = distanceMeters(location, p);
       const numberMatch =
-        !!numberText.trim() && normalized(numberText) === normalized(p.id);
+        !!numberText.trim() &&
+        normalized(numberText) ===
+          normalized(p.source === "centerpoint" ? (p.facilityId ?? "") : p.id);
       const angle =
         heading === null
           ? null
@@ -121,4 +123,46 @@ export function rankPoles(
       };
     })
     .sort((a, b) => b.score - a.score);
+}
+
+// The live adapter receives only the bounded, normalized server response.
+export const centerPointAdapter: PoleDataAdapter = {
+  mode: "live",
+  label: "CenterPoint Energy streetlights",
+  async nearby(location, signal) {
+    const params = new URLSearchParams({
+      latitude: String(location.latitude),
+      longitude: String(location.longitude),
+    });
+    const response = await fetch(`/api/centerpoint/nearby?${params}`, {
+      signal,
+    });
+    const body = await response.json();
+    if (!response.ok)
+      throw new Error(
+        body.error?.message ?? "Streetlight details are unavailable.",
+      );
+    return body.poles.map(
+      (p: {
+        objectId: number;
+        facilityId: string | null;
+        fixtureWattage: string | null;
+        latitude: number;
+        longitude: number;
+      }) => ({
+        id: `CP-${p.objectId}`,
+        facilityId: p.facilityId,
+        fixtureWattage: p.fixtureWattage,
+        latitude: p.latitude,
+        longitude: p.longitude,
+        address: "",
+        source: "centerpoint" as const,
+      }),
+    );
+  },
+};
+export function poleLabel(pole: Pole) {
+  return pole.source === "centerpoint"
+    ? (pole.facilityId ?? "Pole number unavailable")
+    : pole.id;
 }

@@ -1,6 +1,6 @@
 # ArcGIS map and pole picker
 
-**Owner:** Person 2. **Status:** demo report map plus browsable CenterPoint preview.
+**Owner:** Person 2. **Status:** CenterPoint streetlight overlay and bounded selection.
 
 ## Purpose
 
@@ -8,7 +8,7 @@ Display normalized poles, map condition legend, candidate details, and manual co
 
 ## Planned contents
 
-`StreetlightMap.tsx` renders normalized demo coordinates in a browser-only ArcGIS view. `centerpoint/CenterPointMap.tsx` renders the official CenterPoint map-image layer and emits taps for bounded record lookup.
+`StreetlightMap.tsx` overlays the official CenterPoint map-image layer on OpenStreetMap, with only the confirmed selection highlighted. Provider geometry stays unchanged. `centerpoint/CenterPointMap.tsx` renders the official CenterPoint map-image layer and emits taps for bounded record lookup.
 
 ## Working rules
 

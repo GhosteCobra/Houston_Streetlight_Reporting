@@ -29,17 +29,28 @@ export default function StreetlightMap({
     let owned: MapView | null = null;
     (async () => {
       try {
-        const [{ default: Map }, { default: MapView }, { default: config }] =
-          await Promise.all([
-            import("@arcgis/core/Map"),
-            import("@arcgis/core/views/MapView"),
-            import("@arcgis/core/config"),
-          ]);
+        const [
+          { default: Map },
+          { default: MapView },
+          { default: config },
+          { default: MapImageLayer },
+        ] = await Promise.all([
+          import("@arcgis/core/Map"),
+          import("@arcgis/core/views/MapView"),
+          import("@arcgis/core/config"),
+          import("@arcgis/core/layers/MapImageLayer"),
+        ]);
         if (disposed || !container.current) return;
         config.assetsPath = "https://js.arcgis.com/4.34/@arcgis/core/assets";
+        const providerLayer = new MapImageLayer({
+          url: "https://sora.centerpointenergy.com/arcgis/rest/services/SORA/SLO_REPORTING_HOU_MERCATOR/MapServer",
+          title: "CenterPoint Energy streetlights",
+          sublayers: [{ id: 0, visible: true, popupEnabled: false }],
+        });
         owned = new MapView({
           container: container.current,
-          map: new Map({ basemap: "osm" }),
+          map: new Map({ basemap: "osm", layers: [providerLayer] }),
+          popupEnabled: false,
           center: [location.longitude, location.latitude],
           zoom: 17,
           ui: { components: ["zoom", "attribution"] },
@@ -49,10 +60,16 @@ export default function StreetlightMap({
         await owned.when();
         if (disposed) return;
         setReady(true);
+        providerLayer.load().catch(() => {
+          if (!disposed)
+            setError(
+              "CenterPoint streetlights could not load. Try reloading the map.",
+            );
+        });
         owned.on("click", async (e) => {
           if (!callbacks.current.interactive) return;
           const hit = await owned!.hitTest(e);
-          if (disposed) return;
+          if (disposed || !callbacks.current.interactive) return;
           const found = hit.results.find(
             (r) => r.type === "graphic" && r.graphic.attributes?.poleId,
           );
@@ -90,7 +107,9 @@ export default function StreetlightMap({
       ]);
       if (cancelled || !view.current) return;
       view.current.graphics.removeAll();
-      for (const pole of interactive ? poles : [])
+      for (const pole of interactive
+        ? poles.filter((p) => p.id === selected)
+        : [])
         view.current.graphics.add(
           new Graphic({
             geometry: new Point({
@@ -147,8 +166,8 @@ export default function StreetlightMap({
         className="arcgis-map"
         aria-label={
           interactive
-            ? "Demo pole map. Tap the map to move the location pin."
-            : "Sample map of Houston."
+            ? "CenterPoint streetlights over the street map. Tap a marker to inspect nearby poles."
+            : "CenterPoint streetlights over the Houston street map."
         }
       />
       {!ready && !error && (
@@ -162,11 +181,11 @@ export default function StreetlightMap({
           {error}
         </p>
       )}
-      <span className="map-demo">SAMPLE MAP</span>
+      <span className="map-demo">CENTERPOINT STREETLIGHTS</span>
       {interactive && (
         <div className="map-hint">
           <MapPin size={14} />
-          Select a streetlight or place a pin.
+          Tap a pink star to find its pole number.
         </div>
       )}
     </div>
