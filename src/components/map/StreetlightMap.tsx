@@ -2,6 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { Coordinates, Pole } from "@/lib/report/model";
 import type MapView from "@arcgis/core/views/MapView";
+import type SceneView from "@arcgis/core/views/SceneView";
+import type SceneLayer from "@arcgis/core/layers/SceneLayer";
+import type Viewpoint from "@arcgis/core/Viewpoint";
 import type ArcGISMap from "@arcgis/core/Map";
 import { CENTERPOINT_MAP_SERVICE, MAP_MODES, STREET_LEVEL_SCALE, type MapMode } from "@/lib/arcgis/map-layers";
 
@@ -10,21 +13,23 @@ export default function StreetlightMap({ location, poles, selected, onPin, onPol
   onPin: (point: Coordinates) => void; onPole: (id: string) => void; interactive?: boolean;
 }) {
   const container = useRef<HTMLDivElement>(null);
-  const view = useRef<MapView | null>(null);
+  const view = useRef<MapView | SceneView | null>(null);
   const map = useRef<ArcGISMap | null>(null);
+  const buildings = useRef<SceneLayer | null>(null);
+  const viewpoint = useRef<Viewpoint | null>(null);
   const callbacks = useRef({ onPin, onPole, interactive });
   callbacks.current = { onPin, onPole, interactive };
   const [mode, setMode] = useState<MapMode>("default");
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
-  const [show3dInfo, setShow3dInfo] = useState(false);
+  const is3d = mode === "3d";
   const [overview, setOverview] = useState(false);
   const latestLocation = useRef(location);
   latestLocation.current = location;
 
   useEffect(() => {
     let disposed = false;
-    let owned: MapView | null = null;
+    let owned: MapView | SceneView | null = null;
     let stopWatching: (() => void) | undefined;
     setReady(false); setError("");
     (async () => {
@@ -38,17 +43,36 @@ export default function StreetlightMap({ location, poles, selected, onPin, onPol
         if (!map.current) {
           const detailed = new MapImageLayer({ url: CENTERPOINT_MAP_SERVICE, title: "CenterPoint pole numbers", minScale: STREET_LEVEL_SCALE, sublayers: [{ id: 0, visible: true, popupEnabled: false }] });
           const coverage = new MapImageLayer({ url: CENTERPOINT_MAP_SERVICE, title: "CenterPoint service area", minScale: 0, maxScale: STREET_LEVEL_SCALE, sublayers: [{ id: 1, visible: true, popupEnabled: false, minScale: 0, maxScale: 0, renderer: { type: "simple", symbol: { type: "simple-fill", style: "solid", color: [108, 85, 175, 0.08], outline: { color: [63, 52, 109, 0.9], width: 2 } } } }] });
-          map.current = new Map({ basemap: "osm", layers: [coverage, detailed] });
+          map.current = new Map({ basemap: "osm", ground: "world-elevation", layers: [coverage, detailed] });
         }
-        const { default: MapView } = await import("@arcgis/core/views/MapView");
-        if (disposed || !container.current) return;
-        map.current.basemap = mode === "satellite" ? "hybrid" : "osm";
-        owned = new MapView({ container: container.current, map: map.current, popupEnabled: false,
-          center: [latestLocation.current.longitude, latestLocation.current.latitude], zoom: 17,
-          ui: { components: ["zoom", "attribution"] }, constraints: { minZoom: 3, snapToZoom: false },
-        });
+        if (is3d) {
+          const [{ default: SceneView }, { default: SceneLayer }] = await Promise.all([
+            import("@arcgis/core/views/SceneView"), import("@arcgis/core/layers/SceneLayer"),
+          ]);
+          if (disposed || !container.current) return;
+          buildings.current ??= new SceneLayer({ url: "https://basemaps3d.arcgis.com/arcgis/rest/services/OpenStreetMap3D_Buildings_v1/SceneServer/layers/0", title: "OpenStreetMap 3D buildings", popupEnabled: false });
+          map.current.add(buildings.current);
+          map.current.basemap = "hybrid";
+          owned = new SceneView({ container: container.current, map: map.current, qualityProfile: "medium", popupEnabled: false,
+            center: [latestLocation.current.longitude, latestLocation.current.latitude], zoom: 17,
+            ui: { components: ["zoom", "compass", "navigation-toggle", "attribution"] },
+          });
+        } else {
+          const { default: MapView } = await import("@arcgis/core/views/MapView");
+          if (disposed || !container.current) return;
+          if (buildings.current) map.current.remove(buildings.current);
+          map.current.basemap = mode === "satellite" ? "hybrid" : "osm";
+          owned = new MapView({ container: container.current, map: map.current, popupEnabled: false,
+            center: [latestLocation.current.longitude, latestLocation.current.latitude], zoom: 17,
+            ui: { components: ["zoom", "attribution"] }, constraints: { minZoom: 3, snapToZoom: false },
+          });
+        }
         view.current = owned;
         await owned.when();
+        if (disposed) return;
+        if (viewpoint.current) await owned.goTo(viewpoint.current.clone(), { animate: false });
+        if (disposed) return;
+        if (is3d) await (owned as SceneView).goTo({ target: viewpoint.current?.targetGeometry ?? owned.center, scale: viewpoint.current?.scale ?? owned.scale, tilt: 60 }, { animate: false });
         if (disposed) return;
         const handle = reactive.watch(() => owned!.scale, (scale) => setOverview(scale > STREET_LEVEL_SCALE), { initial: true });
         stopWatching = () => handle.remove();
@@ -78,18 +102,21 @@ export default function StreetlightMap({ location, poles, selected, onPin, onPol
     return () => {
       disposed = true; stopWatching?.();
       if (owned) {
+        if (owned.ready) viewpoint.current = owned.viewpoint.clone();
         owned.map = null;
         owned.destroy();
       }
       view.current = null;
     };
-    // Default and Satellite share one view so switching preserves location.
+    // Recreate only when switching between 2D and 3D; retain the viewpoint.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [is3d]);
 
   useEffect(() => () => {
     map.current?.destroy();
     map.current = null;
+    buildings.current?.destroy();
+    buildings.current = null;
   }, []);
 
   useEffect(() => {
@@ -119,19 +146,14 @@ export default function StreetlightMap({ location, poles, selected, onPin, onPol
   return <div className="map-shell">
     <div ref={container} className="arcgis-map" aria-label={`CenterPoint streetlights in ${mode} view. Pink points show published streetlights.`} />
     <div className="map-layer-controls" role="group" aria-label="Map layers">
-      {MAP_MODES.map((item) => <button key={item.id} type="button" aria-pressed={mode === item.id} onClick={() => { if (item.id === "3d") setShow3dInfo(true); else { setMode(item.id); setShow3dInfo(false); } }}>{item.label}</button>)}
+      {MAP_MODES.map((item) => <button key={item.id} type="button" aria-pressed={mode === item.id} onClick={() => setMode(item.id)}>{item.label}</button>)}
     </div>
     <button type="button" className="map-coverage-button" disabled={!ready} onClick={async () => {
       const { default: Extent } = await import("@arcgis/core/geometry/Extent");
       await view.current?.goTo(new Extent({ xmin: -96.360313, ymin: 28.868938, xmax: -94.683509, ymax: 30.317169, spatialReference: { wkid: 4326 } }).expand(1.1), { animate: false }).catch(() => {});
     }}>Service area</button>
     {!ready && !error && <div className="map-loading" role="status">Loading map…</div>}
-    {show3dInfo && <div className="map-3d-pending" role="status">
-      <strong>Photorealistic 3D is pending</strong>
-      <p>Real building imagery requires Google Maps setup. Default and Satellite are available now.</p>
-      <button type="button" onClick={() => setShow3dInfo(false)}>Continue with {mode === "satellite" ? "Satellite" : "Default"}</button>
-    </div>}
     {error && <p className="map-error" role="alert">{error}</p>}
-    <div className="map-hint">{overview ? "Outlined area: CenterPoint coverage. Zoom in to see individual streetlights." : mode === "satellite" ? "Satellite imagery with CenterPoint poles. Imagery is not live." : "Tap a pink star to find its pole number."}</div>
+    <div className="map-hint">{overview ? "Outlined area: CenterPoint coverage. Zoom in to see individual streetlights." : is3d ? "3D building shapes · imagery is not live. Tap a light to begin a report." : mode === "satellite" ? "Satellite imagery with CenterPoint poles. Imagery is not live." : "Tap a pink star to find its pole number."}</div>
   </div>;
 }

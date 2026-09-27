@@ -14,6 +14,8 @@ Issue selection, field errors, report summary, and status presentation.
 
 Accepting a usable photo starts GPS. The controller calls the bounded CenterPoint `PoleDataAdapter.nearby` and `rankPoles` functions. Suggestions require resident confirmation; a photo's pixels do not establish its streetlight ID. See the [Person 5 handoff](../../../docs/photo-identification-handoff.md).
 
+Tapping the map at street level opens location/pole confirmation directly, without requiring a photo. The bounded lookup suggests a pole; the user confirms before review.
+
 ## Working rules
 
 Use shared enums and schema errors. Keep photos private and distinguish internal status from official utility delivery.

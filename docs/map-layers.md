@@ -4,13 +4,13 @@ Branch: `codex/3d-map-layers-0927`. Base: `df26fb0` (current main integrated int
 
 ## Behavior
 
-The main map keeps its Default mode and adds Satellite and 3D controls at the top right. Satellite uses Esri imagery with labels. The 3D control shows a pending message, retaining the current map. The user rejected untextured building models and explicitly deferred Google billing setup. No box-building layer remains. Imagery is dated source imagery, not a live camera feed.
+The main map keeps its Default mode and adds Satellite and 3D controls at the top right. Satellite uses Esri imagery with labels. The 3D control opens satellite terrain and streamed OpenStreetMap building shapes. At the user's request this interim view remains available while photorealistic Google imagery is deferred. Buildings are untextured models, not photographs. Imagery is dated source imagery, not a live camera feed.
 
 At scales wider than 1:10,000, the map shows CenterPoint's official service-area polygon with a dark outline and a light fill. This follows the requested outlined overview instead of covering Houston in pink. The Service area button fits the published polygon extent; clicking the overview zooms to street level. At street level the official streetlight layer supplies pink symbols and FACILITYID labels. Coverage does not mean every pole exists in the database, and does not indicate outage/restoration status.
 
-The provider renders bounded map images. The browser does not download the full pole dataset. Pole selection still uses the existing bounded nearby lookup and explicit confirmation. Neither imagery nor 3D buildings improves the accuracy of CenterPoint's original pole coordinates. No submission API, credentials, schema, photo handling or report state changes were introduced.
+The provider renders bounded map images. The browser does not download the full pole dataset. A street-level map tap starts a report at location confirmation, bypassing the photo step. Pole selection uses the existing bounded nearby lookup and explicit confirmation. Neither imagery nor 3D buildings improves the accuracy of CenterPoint's original pole coordinates. No submission API, credentials, schema or photo storage changes were introduced.
 
-Default and Satellite share one view and preserve map position when switching.
+Default and Satellite share one view. Switching to or from 3D restores the viewpoint; the scene-only building layer is removed before attaching the flat view.
 
 ## Pending photorealistic 3D
 
@@ -32,6 +32,6 @@ The Service area button bounds come from layer 1's `returnExtentOnly=true&outSR=
 
 September 27, 2026, local Next.js app on port 3137, Codex in-app browser. Tested 677px desktop-panel width and a 390 × 844 phone viewport. Real screenshots are retained locally under ignored `.artifacts/map-layers/`.
 
-Verified Default → Satellite, live pink pole labels over imagery, outlined service-area overview and click-to-zoom from coverage to individual poles. The earlier 3D geometry proof was removed after user feedback; its screenshots are historical, not evidence of the final UI. The final 3D state is pending. Existing unit tests: 20 passed. Production build and framework checks pass. Hardware camera/GPS and physical iOS/Android devices were not tested. No real reports were submitted. Greptile not run; no configured reviewer is verified.
+Verified Default → Satellite, live pink pole labels over imagery, outlined service-area overview and click-to-zoom from coverage to individual poles. The interim 3D geometry view was restored at the user's request. Tested a map tap near pole 560949, confirmed the returned candidate, and reached review with that pole ID and No photo attached. No draft was saved or delivered. Existing unit tests: 20 passed. Production build and framework checks pass. Hardware camera/GPS and physical iOS/Android devices were not tested. No real reports were submitted. Greptile not run; no configured reviewer is verified.
 
 Skills applied: new-feature, code-structure, evidence-driven-testing, before-and-after and unslop. Person 2 map/data owns this scope; Person 3 and Person 5 should review map layout and mobile rendering. Existing report contracts remain unchanged.

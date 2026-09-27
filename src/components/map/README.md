@@ -8,7 +8,7 @@ Display normalized poles, map condition legend, candidate details, and manual co
 
 ## Planned contents
 
-`StreetlightMap.tsx` overlays the official CenterPoint map-image layer on OpenStreetMap, with only the confirmed selection highlighted. Its top-corner controls switch between Default and satellite imagery. The 3D control explains that photorealistic imagery is pending Google setup. Wide views show the official service-area outline; individual poles and FACILITYID labels appear at street level. Provider geometry stays unchanged. `centerpoint/CenterPointMap.tsx` renders the official CenterPoint map-image layer and emits taps for bounded record lookup.
+`StreetlightMap.tsx` overlays the official CenterPoint map-image layer on OpenStreetMap, with only the confirmed selection highlighted. Its top-corner controls switch between Default and satellite imagery. The 3D control opens satellite terrain with untextured building models. Photorealistic Google imagery remains deferred. Wide views show the official service-area outline; individual poles and FACILITYID labels appear at street level. Provider geometry stays unchanged. `centerpoint/CenterPointMap.tsx` renders the official CenterPoint map-image layer and emits taps for bounded record lookup.
 
 ## Working rules
 

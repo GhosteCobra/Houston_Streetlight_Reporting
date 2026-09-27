@@ -517,9 +517,22 @@ export default function StreetlightApp() {
                 location={location ?? HOUSTON}
                 poles={poles}
                 selected={pole?.id ?? null}
-                onPin={(point) => changeLocation(point)}
-                onPole={choosePole}
-                interactive={tab === "report"}
+                onPin={(point) => {
+                  changeLocation(point);
+                  if (tab === "map") {
+                    setTab("report");
+                    setStep("location");
+                    setNotice("Confirm the streetlight below. A photo is optional.");
+                  }
+                }}
+                onPole={(id) => {
+                  choosePole(id);
+                  if (tab === "map") {
+                    setTab("report");
+                    setStep("location");
+                  }
+                }}
+                interactive={true}
               />
               {tab === "map" ? (
                 <button
