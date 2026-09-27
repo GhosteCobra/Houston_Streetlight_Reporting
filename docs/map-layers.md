@@ -35,3 +35,7 @@ September 27, 2026, local Next.js app on port 3137, Codex in-app browser. Tested
 Verified Default → Satellite, live pink pole labels over imagery, outlined service-area overview and click-to-zoom from coverage to individual poles. The interim 3D geometry view was restored at the user's request. Tested a map tap near pole 560949, confirmed the returned candidate, and reached review with that pole ID and No photo attached. No draft was saved or delivered. Existing unit tests: 20 passed. Production build and framework checks pass. Hardware camera/GPS and physical iOS/Android devices were not tested. No real reports were submitted. Greptile not run; no configured reviewer is verified.
 
 Skills applied: new-feature, code-structure, evidence-driven-testing, before-and-after and unslop. Person 2 map/data owns this scope; Person 3 and Person 5 should review map layout and mobile rendering. Existing report contracts remain unchanged.
+
+## Selection and handoff update
+
+The candidate light now has a purple ring and pole-number label before confirmation. Removed the extra photo-optional banner. Current location continues to request browser GPS and query nearby poles; physical GPS accuracy was not tested. Review and saved-draft screens explain that direct CenterPoint submission is being worked on but is unavailable. The official reporting link remains a manual handoff. Browser verification saved one DEMO-labeled local test draft for pole 770061 with no photo; nothing was sent to CenterPoint.

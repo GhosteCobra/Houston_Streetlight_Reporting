@@ -516,13 +516,13 @@ export default function StreetlightApp() {
               <StreetlightMap
                 location={location ?? HOUSTON}
                 poles={poles}
-                selected={pole?.id ?? null}
+                selected={pole?.id ?? (tab === "report" && step === "location" ? candidates[0]?.id ?? null : null)}
                 onPin={(point) => {
                   changeLocation(point);
                   if (tab === "map") {
                     setTab("report");
                     setStep("location");
-                    setNotice("Confirm the streetlight below. A photo is optional.");
+                    setNotice("");
                   }
                 }}
                 onPole={(id) => {
@@ -891,9 +891,9 @@ export default function StreetlightApp() {
             <div className="draft-notice">
               <ShieldCheck size={22} />
               <p>
-                <strong>This saves a draft on your device.</strong> We cannot
-                send reports to CenterPoint. You can use its official reporting
-                flow after saving.
+                <strong>This saves a draft on your device.</strong> Direct submission
+                to CenterPoint is being worked on and is not available yet.
+                After saving, open CenterPoint’s official reporting website.
               </p>
             </div>
             <div className="step-actions">
@@ -925,6 +925,8 @@ export default function StreetlightApp() {
               Your draft is saved in this browser.{" "}
               <strong>CenterPoint has not received a report.</strong>
             </p>
+            <p>Direct submission to CenterPoint is being worked on and is not
+              available yet. Use the official reporting website below for now.</p>
             <div className="saved-summary">
               <span>LOCAL DRAFT</span>
               <strong>

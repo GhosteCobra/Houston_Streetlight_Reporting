@@ -132,10 +132,16 @@ export default function StreetlightMap({ location, poles, selected, onPin, onPol
       const [{ default: Graphic }, { default: Point }] = await Promise.all([import("@arcgis/core/Graphic"), import("@arcgis/core/geometry/Point")]);
       if (cancelled || !view.current) return;
       view.current.graphics.removeAll();
-      for (const pole of interactive ? poles.filter((p) => p.id === selected) : []) view.current.graphics.add(new Graphic({
+      for (const pole of interactive ? poles.filter((p) => p.id === selected) : []) {
+        view.current.graphics.add(new Graphic({
         geometry: new Point({ latitude: pole.latitude, longitude: pole.longitude }), attributes: { poleId: pole.id },
-        symbol: { type: "simple-marker", color: "#6c55af", size: 20, outline: { color: "white", width: 2 } },
+        symbol: { type: "simple-marker", color: [108, 85, 175, 0.25], size: 30, outline: { color: "#442785", width: 3 } },
       }));
+        view.current.graphics.add(new Graphic({
+          geometry: new Point({ latitude: pole.latitude, longitude: pole.longitude }), attributes: { poleId: pole.id },
+          symbol: { type: "text", text: `Pole ${pole.facilityId ?? pole.id}`, color: "#241342", haloColor: "white", haloSize: 2, yoffset: 24, font: { size: 13, weight: "bold" } },
+        }));
+      }
       if (interactive) view.current.graphics.add(new Graphic({ geometry: new Point({ latitude: location.latitude, longitude: location.longitude }),
         symbol: { type: "simple-marker", style: "cross", color: "#198799", size: 20, outline: { color: "white", width: 2 } },
       }));
