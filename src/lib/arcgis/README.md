@@ -1,6 +1,6 @@
 # ArcGIS data adapter
 
-**Owner:** Person 2 with Person 4. **Status:** documentation placeholder; implementation pending.
+**Owner:** Person 2 with Person 4. **Status:** live provider adapter and synthetic test fixtures.
 
 ## Purpose
 
@@ -8,7 +8,7 @@ Normalize synthetic or approved ArcGIS data into the pole contract.
 
 ## Planned contents
 
-Future synthetic source, approved feature-service source, and coordinate/field mapping helpers.
+`poles.ts` contains the bounded same-origin CenterPoint client, ranker and display-label helper. The demo adapter remains for isolated tests; live failures never substitute synthetic records.
 
 ## Working rules
 

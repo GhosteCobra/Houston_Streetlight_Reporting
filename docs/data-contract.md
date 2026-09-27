@@ -63,3 +63,7 @@ Draft state is local for MVP. Persisted status progression is submitted → unde
 Report owners can retrieve their own records; admin access requires an explicit trusted role. Do not expose a public report list containing photos or precise resident data. Store object paths, not signed URLs; mint short-lived links only after authorization. Session ownership must be enforced by database/storage policies and server checks.
 
 The implemented browser-local Draft model accepts a null photo for the no-photo fallback. Existing photo-bearing drafts remain compatible; this does not change the proposed server API.
+
+## Implemented local CenterPoint draft fields
+
+The browser-local `Draft` accepts `dataSource=demo|centerpoint`. Existing demo drafts remain readable. New CenterPoint drafts preserve the opaque `poleId=CP-<OBJECTID>` separately from nullable `facilityId` and `fixtureWattage`. Only FACILITYID is displayed as a pole number; missing facility IDs never fall back to a GIS row ID. Selected coordinates are the provider's WGS84 geometry. A confirmed manual pin can have no pole ID. `providerDelivery` remains `not_sent` and images remain in IndexedDB on the device.

@@ -134,6 +134,21 @@ export default function CameraCapture({
   }
   return (
     <>
+      <div className="photo-modes">
+        <button
+          onClick={() => {
+            onPhoto(null);
+            start();
+          }}
+        >
+          <Camera size={21} />
+          Camera
+        </button>
+        <button onClick={() => input.current?.click()}>
+          <ImagePlus size={21} />
+          Gallery
+        </button>
+      </div>
       <div className={"camera-stage " + (photo ? "has-photo" : "")}>
         {!photo && !live && (
           <svg
@@ -245,21 +260,6 @@ export default function CameraCapture({
         aria-label="Choose streetlight photo"
         onChange={(e) => upload(e.target.files?.[0])}
       />
-      <div className="photo-modes">
-        <button
-          onClick={() => {
-            onPhoto(null);
-            start();
-          }}
-        >
-          <Camera size={21} />
-          Camera
-        </button>
-        <button onClick={() => input.current?.click()}>
-          <ImagePlus size={21} />
-          Gallery
-        </button>
-      </div>
       {error && (
         <p role="alert" className="error">
           {error}
