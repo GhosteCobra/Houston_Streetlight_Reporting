@@ -2,7 +2,7 @@
 
 > The runnable camera-first frontend uses local drafts. See [current behavior and setup](local-frontend.md); the server/Supabase design below remains proposed.
 
-**Owner:** Person 4. No API routes exist yet. Implement and test this contract before replacing frontend mocks. All endpoints are same-origin Next.js Route Handlers; verify the session server-side.
+**Owner:** Person 4. The preview implements read-only `GET /api/centerpoint/nearby?latitude=…&longitude=…`, with a fixed 25 m radius, cached provider queries, and 400/429/503 errors. See [CenterPoint integration](centerpoint-integration.md). The general APIs below remain proposed. Implement and test this contract before replacing frontend mocks. All endpoints are same-origin Next.js Route Handlers; verify the session server-side.
 
 | Endpoint | Input | Result |
 | --- | --- | --- |
@@ -28,3 +28,5 @@ Use `{error: {code, message, fields?}}`. Do not include tokens, storage credenti
 5. Never call the utility in demo mode. Return `provider_delivery_status=not_sent`.
 
 The browser uploads bytes to the authorized storage URL, then completes validation before creating a report. Do not route large binary uploads through the report JSON endpoint. Cleanup of failed/unclaimed uploads belongs to the server storage module.
+
+The main report UI now uses the same bounded `GET /api/centerpoint/nearby` route as the research preview. Its query remains a fixed 25 m radius with a 50-record limit, WGS84 normalization, one-minute instance cache and 60 requests per minute per instance. No full regional dataset is fetched or committed. Requests outside the Houston region, service failures and incomplete results produce recoverable errors rather than demo poles. Distributed traffic limits remain future work for a larger public rollout.

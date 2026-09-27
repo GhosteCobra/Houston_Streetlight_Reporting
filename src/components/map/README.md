@@ -1,6 +1,6 @@
 # ArcGIS map and pole picker
 
-**Owner:** Person 2. **Status:** documentation placeholder; implementation pending.
+**Owner:** Person 2. **Status:** CenterPoint streetlight overlay and bounded selection.
 
 ## Purpose
 
@@ -8,7 +8,7 @@ Display normalized poles, map condition legend, candidate details, and manual co
 
 ## Planned contents
 
-Future StreetlightMap and PoleList components.
+`StreetlightMap.tsx` overlays the official CenterPoint map-image layer on OpenStreetMap, with only the confirmed selection highlighted. Provider geometry stays unchanged. `centerpoint/CenterPointMap.tsx` renders the official CenterPoint map-image layer and emits taps for bounded record lookup.
 
 ## Working rules
 

@@ -50,6 +50,7 @@ Browser tests use synthetic images, mocked permission errors and synthetic camer
 ## Current behavior and contracts
 
 - `StreetlightApp` owns one in-memory report: photo → location/pole → review → saved draft. Unsaved input is lost on page reload. Saved drafts can be edited on the same browser/origin.
+- Accepting a photo with "Use this photo" starts GPS and nearby lookup. A suggestion above the map offers "Confirm Streetlight" or "Choose Another", which focuses the existing candidate list. Permission denial, unavailable GPS, timeout and failed lookup preserve manual entry; failed lookup also offers retry. A new photo or location requires a new confirmation. GPS reflects the resident's current location, so older photos may need manual correction. See the [photo identification handoff](photo-identification-handoff.md).
 - Continue without a photo is available; photo-free drafts can be saved and reopened.
 - `CameraCapture` starts only after a tap, handles denial/unavailable devices, and stops tracks on capture, close, unmount or backgrounding. JPEG/PNG/WebP uploads are decoded, limited to 10 MB and 60 million pixels, resized to 1280 pixels and re-encoded without original EXIF. HEIC is not supported.
 - `StreetlightMap` is loaded only in the browser. It uses ArcGIS Maps SDK and the OpenStreetMap basemap with attribution. A list and coordinate fields remain available if rendering fails. Addresses are notes, not geocoded searches.
