@@ -156,7 +156,7 @@ The planning conversation assigns responsibilities to Person 1–5 without namin
 - Coordinate issues, dependencies, shared interfaces, and pull request review.
 - Prepare the demo narrative and final presentation.
 
-Example branches: `docs/project-requirements`, `docs/centerpoint-process`, `docs/demo-presentation`.
+Example branches: `project-requirements`, `centerpoint-process`, `demo-presentation`.
 
 **Handoff:** provide agreed requirements and data definitions to everyone; coordinate release review. Changes authored by the lead still need another reviewer.
 
@@ -168,7 +168,7 @@ Example branches: `docs/project-requirements`, `docs/centerpoint-process`, `docs
 - Add a legend for working, reported, damaged, and unknown lights.
 - Document dataset provenance and coordinate assumptions.
 
-Example branches: `feature/streetlight-map`, `feature/pole-id-gps`, `feature/pole-details`, `feature/map-status-colors`.
+Example branches: `streetlight-map`, `pole-id-gps`, `pole-details`, `map-status-colors`.
 
 **Handoff:** agree with Person 4 on pole lookup data and with Person 3 on how a selected pole populates the form.
 
@@ -180,7 +180,7 @@ Example branches: `feature/streetlight-map`, `feature/pole-id-gps`, `feature/pol
 - Implement review, validation feedback, submission, and confirmation screens.
 - Present errors and demo status clearly.
 
-Example branches: `feature/home-page`, `feature/issue-selection`, `feature/report-form`, `feature/report-review`, `feature/confirmation-screen`.
+Example branches: `home-page`, `issue-selection`, `report-form`, `report-review`, `confirmation-screen`.
 
 **Handoff:** consume the agreed map selection, report API, and photo-upload interfaces from Persons 2, 4, and 5.
 
@@ -192,7 +192,7 @@ Example branches: `feature/home-page`, `feature/issue-selection`, `feature/repor
 - Implement report-status handling.
 - Keep the demo provider adapter separate from any future approved integration.
 
-Example branches: `feature/report-api`, `feature/gps-pole-matching`, `feature/address-lookup`, `feature/report-status`.
+Example branches: `report-api`, `gps-pole-matching`, `address-lookup`, `report-status`.
 
 **Handoff:** document request/response shapes, errors, and status values before the frontend depends on them.
 
@@ -205,7 +205,7 @@ Example branches: `feature/report-api`, `feature/gps-pole-matching`, `feature/ad
 - Configure formatting, automated checks, GitHub Actions, and demo deployment.
 - Write reproducible setup and deployment instructions once the stack exists.
 
-Example branches: `feature/photo-upload`, `feature/photo-validation`, `test/end-to-end-report`, `ci/github-actions`, `docs/setup-instructions`.
+Example branches: `photo-upload`, `photo-validation`, `end-to-end-report`, `github-actions`, `setup-instructions`.
 
 **Handoff:** agree with Persons 3 and 4 on photo references and upload errors; coordinate release testing with the whole team.
 
@@ -270,7 +270,7 @@ Proposed conventions:
 Use short-lived branches for individual features, fixes, docs, or tests—not permanent branches for individual people.
 
 ```text
-feature / fix / docs / test / ci branch
+descriptive task branch
                   |
                   v
              develop
@@ -315,7 +315,7 @@ A repository administrator should protect `main` and `develop`, require pull req
 ```bash
 git switch develop
 git pull --ff-only origin develop
-git switch -c feature/pole-id-gps
+git switch -c pole-id-gps
 ```
 
 3. Implement a small, reviewable change. Run the relevant tests and formatting checks.
@@ -340,7 +340,7 @@ If there are conflicts, resolve them with the relevant owners, stage the resolut
 6. Push your branch:
 
 ```bash
-git push -u origin feature/pole-id-gps
+git push -u origin pole-id-gps
 ```
 
 7. Open a pull request **into `develop`**, link the issue, explain the behavior, and include test results.
