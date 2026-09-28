@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Search, LoaderCircle, MapPin } from "lucide-react";
 import type { AddressMatch } from "@/lib/server/address-search";
 
-export default function AddressSearch({ onSelect, contextKey }: {
-  onSelect: (match: AddressMatch) => void; contextKey: string;
+export default function AddressSearch({ onSelect, contextKey, getSelectionVersion }: {
+  onSelect: (match: AddressMatch) => void; contextKey: string; getSelectionVersion: () => number;
 }) {
   const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(false);
@@ -25,6 +25,7 @@ export default function AddressSearch({ onSelect, contextKey }: {
       event.preventDefault();
       pending.current?.abort();
       const controller = new AbortController(); pending.current = controller;
+      const selectionVersion = getSelectionVersion();
       setBusy(true); setMessage(""); setMatches([]);
       try {
         const response = await fetch("/api/address-search", {
@@ -32,13 +33,13 @@ export default function AddressSearch({ onSelect, contextKey }: {
           body: JSON.stringify({ query: query.trim() }), signal: controller.signal,
         });
         const data = await response.json();
-        if (controller.signal.aborted) return;
+        if (controller.signal.aborted || selectionVersion !== getSelectionVersion()) return;
         if (!response.ok) throw new Error(data.error?.message ?? "Address search failed. Try again.");
         if (!data.matches.length) setMessage("No matching address in the Houston area. Include the street number, city and ZIP code, or tap the map.");
         else if (data.matches.length === 1) choose(data.matches[0]);
         else { setMatches(data.matches); setMessage("Choose the address you meant."); }
       } catch (error) {
-        if (!controller.signal.aborted) setMessage(error instanceof Error ? error.message : "Address search failed. Try again.");
+        if (!controller.signal.aborted && selectionVersion === getSelectionVersion()) setMessage(error instanceof Error ? error.message : "Address search failed. Try again.");
       } finally {
         if (!controller.signal.aborted) setBusy(false);
       }

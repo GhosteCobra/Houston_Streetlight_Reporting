@@ -21,3 +21,5 @@ Visual evidence is retained in ignored `.artifacts/address-welcome/`. `public/im
 Physical phone camera/GPS, native Expo behavior, teammate review and Greptile review were not run. The search service accepts complete street addresses, not arbitrary business names. An instance rate limit and eight-second provider timeout are implemented; distributed traffic limiting is future work. The existing two moderate development dependency advisories remain unchanged. Drafts still stay in the browser and are not sent to CenterPoint.
 
 Production uses the existing Vercel project. Roll back with a normal revert or the previous Vercel deployment; saved-draft schema is unchanged.
+
+The live smoke test exposed a response-versus-render race after resetting the map. Address responses now compare the controller’s synchronous selection version before applying results, in addition to cancelling through the component effect. The delayed-response regression covers this case.

@@ -202,12 +202,14 @@ export default function StreetlightApp() {
     if (poleLoading || locationLoading) return;
     const chosen = poles.find((p) => p.id === value);
     if (!chosen) return;
+    request.current++;
     setPole(chosen);
     setConfirmed(true);
     setError("");
   }
   function confirmPin() {
     if (!location) return;
+    request.current++;
     setPole(null);
     setConfirmed(true);
     setError("");
@@ -343,6 +345,7 @@ export default function StreetlightApp() {
               ? "Review your report"
               : "Draft saved";
   const addressSearch = <AddressSearch
+    getSelectionVersion={() => request.current}
     contextKey={`${tab}:${step}:${location?.latitude}:${location?.longitude}:${lookupAttempt}:${locationLoading}`}
     onSelect={(match) => {
       changeLocation(match);
