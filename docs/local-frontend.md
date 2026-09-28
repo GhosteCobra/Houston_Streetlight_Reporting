@@ -1,6 +1,6 @@
 # Run and test Streetlight Check
 
-The camera frontend is integrated with Vercel setup on `codex/vercel-phone-preview-0926`. See [hosting setup](phone-preview.md) and [release comparison](frontend-comparison.md). `/` and `/report` open the Report screen; Map and Saved drafts are tabs in the same draft controller.
+The camera frontend and Vercel setup are integrated on `main`. See [hosting setup](phone-preview.md) and [release comparison](frontend-comparison.md). `/` and `/report` open the Report screen; Map and Saved drafts are tabs in the same draft controller.
 
 ## Run locally
 
@@ -54,9 +54,9 @@ Browser tests use synthetic images, mocked permission errors and synthetic camer
 - Continue without a photo is available; photo-free drafts can be saved and reopened.
 - `CameraCapture` starts only after a tap, handles denial/unavailable devices, and stops tracks on capture, close, unmount or backgrounding. JPEG/PNG/WebP uploads are decoded, limited to 10 MB and 60 million pixels, resized to 1280 pixels and re-encoded without original EXIF. HEIC is not supported.
 - `StreetlightMap` is loaded only in the browser. It uses ArcGIS Maps SDK and the OpenStreetMap basemap with attribution. A list and coordinate fields remain available if rendering fails. Addresses are notes, not geocoded searches.
-- `PoleDataAdapter.nearby` returns fixed synthetic DEMO poles within 750 m. The frontend never requests CenterPoint's pole service. [The data assessment](arcgis-data-assessment.md) explains why.
+- The active adapter performs bounded CenterPoint lookups within 25 m of the selected point. Provider outages preserve manual entry. The synthetic adapter remains available for tests. See [CenterPoint integration](centerpoint-integration.md).
 - Ranking combines distance, a user-transcribed number visible in the photo, and optional approximate compass heading if the browser exposes it. This version has no OCR, image classifier, or calibrated confidence score. Every candidate requires a tap; an unknown pole requires explicit pin confirmation. GPS cannot establish the pole or street side.
-- `src/lib/report/model.ts` is the implemented local schema. A `Draft` has nullable photo data, confirmed location, nullable pole ID, issue, description, optional number/heading evidence, UUID and save time. Its status is always `draft`, provider delivery is always `not_sent`, and data source is `demo`. It does not implement the proposed server contract in `data-contract.md` or `api-contract.md`.
+- `src/lib/report/model.ts` is the implemented local schema. A `Draft` has nullable photo data, confirmed location, nullable pole ID, issue, description, optional number/heading evidence, UUID and save time. Its status is always `draft`, provider delivery is always `not_sent`, and data source is `demo` or `centerpoint`. It does not implement the proposed server contract in `data-contract.md` or `api-contract.md`.
 - `src/lib/report/storage.ts` validates records and stores up to 20 drafts in IndexedDB. Saving edits overwrites the same UUID. Errors keep the form available for retry. No Supabase, authentication, server upload or provider submission exists.
 - The saved screen links to the official CenterPoint site. Nothing is transferred automatically, and a demo ID must never be entered as a real utility ID.
 
@@ -69,4 +69,4 @@ Person 1 resolves data-use permission; Person 2 replaces the demo adapter only a
 
 At widths of 1000 px and above, the photo screen includes the neighborhood illustration from Person 3's frontend branch. The map and location controls appear in two columns. On phones, the camera remains the first screen and the map controls stack below the map. Opening Map without a location loads the fixed Houston sample area; a pole or pin still needs explicit confirmation.
 
-Saved drafts is browser-local history without accounts. It uses the existing IndexedDB records, so the rename does not delete or migrate drafts. Photos remain local, and clearing browser site data removes saved drafts. The map includes a direct link to CenterPoint's official map; provider records are not imported into the application. See [integration evidence](desktop-map-handoff.md).
+Saved drafts is browser-local history without accounts. It uses the existing IndexedDB records, so the rename does not delete or migrate drafts. Photos remain local, and clearing browser site data removes saved drafts. The map includes a direct link to CenterPoint's official map; nearby provider records are queried through the bounded adapter. See [integration evidence](desktop-map-handoff.md).

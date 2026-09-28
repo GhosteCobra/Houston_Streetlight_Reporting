@@ -544,23 +544,6 @@ export default function StreetlightApp() {
                 </button>
               ) : (
                 <div className="map-controls">
-                  {tab === "report" &&
-                    (step === "photo" || step === "location") && (
-                      <DesktopUpload
-                        photo={photo}
-                        onPhoto={(next) => {
-                          request.current++;
-                          setPhoto(next);
-                          setHeading(null);
-                          setUseHeading(false);
-                        }}
-                        onContinue={() => {
-                          setStep("location");
-                          // A map-first report already has a user-selected location.
-                          if (!location || location.source === "demo") locate();
-                        }}
-                      />
-                    )}
                   {!locationLoading &&
                     !poleLoading &&
                     !poleError &&
@@ -580,6 +563,31 @@ export default function StreetlightApp() {
                             block: "center",
                           });
                           candidateList.current?.focus({ preventScroll: true });
+                        }}
+                      />
+                    )}
+                  {confirmed && (
+                    <p role="status" className="success">
+                      <Check size={18} />
+                      {pole
+                        ? `${poleLabel(pole)} selected.`
+                        : "Manual location confirmed. Pole ID unknown."}
+                    </p>
+                  )}
+                  {tab === "report" &&
+                    (step === "photo" || step === "location") && (
+                      <DesktopUpload
+                        photo={photo}
+                        onPhoto={(next) => {
+                          request.current++;
+                          setPhoto(next);
+                          setHeading(null);
+                          setUseHeading(false);
+                        }}
+                        onContinue={() => {
+                          setStep("location");
+                          // A map-first report already has a user-selected location.
+                          if (!location || location.source === "demo") locate();
                         }}
                       />
                     )}
@@ -774,14 +782,7 @@ export default function StreetlightApp() {
                       )}
                     </details>
                   )}
-                  {confirmed && (
-                    <p role="status" className="success">
-                      <Check size={18} />
-                      {pole
-                        ? `${poleLabel(pole)} selected.`
-                        : "Manual location confirmed. Pole ID unknown."}
-                    </p>
-                  )}
+
                 </div>
               )}
             </div>
