@@ -1,6 +1,6 @@
 # Run and test Streetlight Check
 
-The camera frontend and Vercel setup are integrated on `main`. See [hosting setup](phone-preview.md) and [release comparison](frontend-comparison.md). `/` and `/report` open the Report screen; Map and Saved drafts are tabs in the same draft controller.
+The camera frontend and Vercel setup are integrated on `main`. See [hosting setup](phone-preview.md) and [release comparison](frontend-comparison.md). `/` opens a desktop welcome page and takes phone-width visitors directly to `/report`. `/report` opens the Report screen; Map and Saved drafts are tabs in the same draft controller.
 
 ## Run locally
 
@@ -70,3 +70,8 @@ Person 1 resolves data-use permission; Person 2 replaces the demo adapter only a
 At widths of 1000 px and above, the photo screen includes the neighborhood illustration from Person 3's frontend branch. The map and location controls appear in two columns. On phones, the camera remains the first screen and the map controls stack below the map. Opening Map without a location loads the fixed Houston sample area; a pole or pin still needs explicit confirmation.
 
 Saved drafts is browser-local history without accounts. It uses the existing IndexedDB records, so the rename does not delete or migrate drafts. Photos remain local, and clearing browser site data removes saved drafts. The map includes a direct link to CenterPoint's official map; nearby provider records are queried through the bounded adapter. See [integration evidence](desktop-map-handoff.md).
+
+
+## Address lookup
+
+When a map is visible, Find an address accepts a street number, street, city and optional ZIP code. Search sits above the desktop photo panel and above the mobile Map view. One match moves the map immediately; multiple matches offer a choice. The location still requires pole or pin confirmation. Census address locations are estimates, so inspect the map and tap the correct streetlight. Empty results or outages retain the report and offer retry/manual alternatives. Photos do not supply verified location data.

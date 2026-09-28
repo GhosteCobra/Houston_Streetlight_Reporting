@@ -8,7 +8,7 @@ Home page, root layout, reporting journey, and HTTP Route Handlers.
 
 ## Planned contents
 
-`page.tsx` opens the report journey with the CenterPoint overlay. `centerpoint-preview/page.tsx` server-renders a browsable CenterPoint map with bounded tap inspection and local photo/report preparation followed by the official form handoff.
+`page.tsx` opens a desktop welcome page with a real phone-sized app screenshot. Phone-width visitors continue directly to `/report`, which opens the report journey with the CenterPoint overlay. `centerpoint-preview/page.tsx` server-renders a browsable CenterPoint map with bounded tap inspection and local photo/report preparation followed by the official form handoff.
 
 ## Working rules
 

@@ -19,7 +19,7 @@ test("Report opens first; denied camera falls back to gallery", async ({
       throw new DOMException("Denied", "NotAllowedError");
     };
   });
-  await page.goto("/");
+  await page.goto("/report");
   await expect(
     page.getByRole("heading", { name: "Report a streetlight" }),
   ).toBeVisible();
@@ -40,7 +40,7 @@ test("Photo to confirmed demo pole to local draft; edit and reload; no utility s
     if (r.method() !== "GET" && r.url().includes("centerpointenergy.com"))
       providerRequests.push(r.url());
   });
-  await page.goto("/");
+  await page.goto("/report");
   await upload(page);
   await expect(
     page.getByRole("button", { name: "Review report" }),
@@ -84,7 +84,7 @@ test("Denied GPS, bad coordinates, and confirmed manual pin", async ({
         TIMEOUT: 3,
       });
   });
-  await page.goto("/");
+  await page.goto("/report");
   await upload(page);
   await page.getByRole("button", { name: "Use my current location" }).click();
   await expect(page.locator("main [role=alert]")).toContainText(
@@ -137,7 +137,7 @@ test("Camera stream stops when navigating away (synthetic test stream)", async (
       return stream;
     };
   });
-  await page.goto("/");
+  await page.goto("/report");
   await page.getByRole("button", { name: "Open camera", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Close camera" }),
@@ -151,7 +151,7 @@ test("Camera stream stops when navigating away (synthetic test stream)", async (
 });
 
 test("No-photo draft can be saved, reopened, and edited", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/report");
   await page.getByRole("button", { name: "Continue without a photo" }).click();
   await page.getByRole("button", { name: "Reset map to Houston" }).click();
   await page
@@ -177,7 +177,7 @@ test("Map offers one start action, then report keeps fallback options closed", a
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
+  await page.goto("/report");
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Start a report" }),
@@ -224,7 +224,7 @@ test("Desktop starts with a full map and uploads a photo beside it", async ({
     longitude: -95.3698,
     accuracy: 8,
   });
-  await page.goto("/");
+  await page.goto("/report");
   await expect(
     page.locator(".map-layout > .map-shell:not(.map-loading)"),
   ).toBeVisible();
@@ -269,7 +269,7 @@ test("Provider outage preserves photo and manual reporting without demo substitu
       },
     }),
   );
-  await page.goto("/");
+  await page.goto("/report");
   await upload(page);
   await page.getByRole("button", { name: "Reset map to Houston" }).click();
   await expect(
@@ -296,7 +296,7 @@ test("Provider outage preserves photo and manual reporting without demo substitu
 for (const width of [1440, 390]) {
   test(`Map-first report keeps its pole through upload and save at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/");
+    await page.goto("/report");
     if (width < 1000) await page.getByRole("button", { name: "Map", exact: true }).click();
     await expect(page.getByRole("button", { name: "Service area", exact: true })).toBeEnabled({ timeout: 45000 });
     const map = page.locator(".arcgis-map");

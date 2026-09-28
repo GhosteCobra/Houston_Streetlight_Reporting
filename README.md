@@ -2,6 +2,8 @@
 
 A mobile-first, camera-first web app planned as a hackathon project to help residents report streetlight problems in Houston, Galveston, and the surrounding area safely and accurately.
 
+See [address search and the desktop welcome page](docs/address-search-welcome.md) for the current entry flow.
+
 See the [report-flow and branch reconciliation](docs/report-completion.md) for the latest release checks and renamed branches.
 
 **Status: runnable frontend demo.** Run `npm ci` and `npm run dev`, then open http://localhost:3000. The camera-first flow supports capture/upload, confirmed map location, demo pole ranking, review and device-local drafts. Nothing is submitted to CenterPoint. See [local and phone setup](docs/local-frontend.md), [data assessment](docs/arcgis-data-assessment.md), and [test results](docs/frontend-test-results.md).

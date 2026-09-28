@@ -19,6 +19,7 @@ import {
   ImagePlus,
 } from "lucide-react";
 import Brand from "./Brand";
+import AddressSearch from "./AddressSearch";
 import CameraCapture from "../camera/CameraCapture";
 import StreetlightSuggestion from "./StreetlightSuggestion";
 import DesktopUpload from "./DesktopUpload";
@@ -143,6 +144,8 @@ export default function StreetlightApp() {
       request.current++;
       setLocationLoading(false);
       setLocation({ ...point, accuracy, source, address: "" });
+      setAddress("");
+      setNotice("");
       setStep("location");
       setPoles([]);
       setPoleLoading(true);
@@ -339,6 +342,14 @@ export default function StreetlightApp() {
             : step === "review"
               ? "Review your report"
               : "Draft saved";
+  const addressSearch = <AddressSearch
+    contextKey={`${tab}:${step}:${location?.latitude}:${location?.longitude}:${lookupAttempt}:${locationLoading}`}
+    onSelect={(match) => {
+      changeLocation(match);
+      setAddress(match.label);
+      setNotice(`Showing ${match.label}. Confirm a streetlight or map pin before review.`);
+    }}
+  />;
   const showMap =
     tab === "map" ||
     (tab === "report" && (step === "photo" || step === "location"));
@@ -513,6 +524,7 @@ export default function StreetlightApp() {
                   Confirm the side of the street yourself.
                 </p>
               )}
+            {tab === "map" && <div className="map-address-bar">{addressSearch}</div>}
             <div className={`map-layout ${tab === "map" ? "map-only" : ""}`}>
               <StreetlightMap
                 location={location ?? HOUSTON}
@@ -544,6 +556,7 @@ export default function StreetlightApp() {
                 </button>
               ) : (
                 <div className="map-controls">
+                  {addressSearch}
                   {!locationLoading &&
                     !poleLoading &&
                     !poleError &&

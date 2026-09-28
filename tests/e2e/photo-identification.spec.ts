@@ -26,7 +26,7 @@ test("accepted photo requests GPS, suggests nearest light, and saves confirmed l
     longitude: -95.3698,
     accuracy: 8,
   });
-  await page.goto("/");
+  await page.goto("/report");
   await acceptPhoto(page);
   const suggestion = page.getByRole("region", {
     name: "Suggested streetlight",
@@ -76,7 +76,7 @@ test("choose another uses the existing list and changing location clears confirm
 }) => {
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 29.7604, longitude: -95.3698 });
-  await page.goto("/");
+  await page.goto("/report");
   await acceptPhoto(page);
   await page.getByRole("button", { name: "Choose another" }).click();
   await expect(
@@ -121,7 +121,7 @@ for (const [code, message] of [
           TIMEOUT: 3,
         });
     }, code);
-    await page.goto("/");
+    await page.goto("/report");
     await acceptPhoto(page);
     await expect(page.locator("main [role=alert]")).toContainText(message);
     await page
@@ -160,7 +160,7 @@ test("late GPS does not replace an explicitly selected manual location", async (
         } as GeolocationPosition);
     };
   });
-  await page.goto("/");
+  await page.goto("/report");
   await acceptPhoto(page);
   await expect(
     page.getByText("Finding your current location…", { exact: true }),
@@ -180,7 +180,7 @@ test("replacement photo clears an old confirmation; remove and no-photo still wo
 }) => {
   await context.grantPermissions(["geolocation"]);
   await context.setGeolocation({ latitude: 29.7604, longitude: -95.3698 });
-  await page.goto("/");
+  await page.goto("/report");
   await acceptPhoto(page);
   await page.getByRole("button", { name: "Confirm streetlight" }).click();
   await page.getByRole("button", { name: "Review report" }).click();
@@ -216,7 +216,7 @@ test("photo validation rejects unsupported and corrupt files without starting GP
       throw Error("Unexpected GPS request");
     };
   });
-  await page.goto("/");
+  await page.goto("/report");
   await page.getByLabel("Choose streetlight photo").setInputFiles({
     name: "DEMO.txt",
     mimeType: "text/plain",
@@ -263,7 +263,7 @@ test("synthetic camera capture, retake, and preview still lead to GPS confirmati
       return canvas.captureStream(10);
     };
   });
-  await page.goto("/");
+  await page.goto("/report");
   await page.getByRole("button", { name: "Open camera", exact: true }).click();
   await expect
     .poll(() =>

@@ -30,3 +30,9 @@ Use `{error: {code, message, fields?}}`. Do not include tokens, storage credenti
 The browser uploads bytes to the authorized storage URL, then completes validation before creating a report. Do not route large binary uploads through the report JSON endpoint. Cleanup of failed/unclaimed uploads belongs to the server storage module.
 
 The main report UI now uses the same bounded `GET /api/centerpoint/nearby` route as the research preview. Its query remains a fixed 25 m radius with a 50-record limit, WGS84 normalization, one-minute instance cache and 60 requests per minute per instance. No full regional dataset is fetched or committed. Requests outside the Houston region, service failures and incomplete results produce recoverable errors rather than demo poles. Distributed traffic limits remain future work for a larger public rollout.
+
+## Address search
+
+`POST /api/address-search` accepts `{ "query": "901 Bagby St, Houston, TX" }`. Queries must contain 5–100 characters. The server calls the [US Census single-address geocoder](https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html) with an eight-second timeout and returns up to five `{label, latitude, longitude}` matches within the Houston region. Invalid requests return 400, instance-budget exhaustion returns 429, and provider failures return 503. Responses use `Cache-Control: no-store`; addresses are not cached or logged by application code. Hosting/provider infrastructure may retain request metadata. The instance budget is 30 searches per minute, not a distributed traffic limit.
+
+Search moves the map but never confirms a pole. Empty results preserve the current report. The client cancels stale searches when the user edits the query, changes location, or navigates to another step. Search is explicitly submitted rather than sent on each keystroke. Coordinates are address estimates, not verified pole locations.

@@ -123,8 +123,8 @@ export default function StreetlightMap({ location, poles, selected, onPin, onPol
     if (map.current && ready) map.current.basemap = mode === "default" ? "osm" : "hybrid";
   }, [mode, ready]);
   useEffect(() => {
-    if (view.current?.ready) void view.current.goTo({ center: [location.longitude, location.latitude] }, { animate: false }).catch(() => {});
-  }, [location.latitude, location.longitude]);
+    if (view.current?.ready) void view.current.goTo({ center: [location.longitude, location.latitude], ...(view.current.scale > STREET_LEVEL_SCALE ? { zoom: 17 } : {}) }, { animate: false }).catch(() => {});
+  }, [location.latitude, location.longitude, ready]);
   useEffect(() => {
     let cancelled = false;
     (async () => {

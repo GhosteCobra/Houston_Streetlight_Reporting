@@ -8,6 +8,8 @@ Implement the documented pole, location, upload, and report endpoints.
 
 ## Planned contents
 
+`address-search/route.ts` provides explicit, uncached Census address searches with input validation, an instance request budget and recoverable errors.
+
 `centerpoint/nearby/route.ts` validates Houston-region coordinates, queries a fixed 25 m radius, and applies an instance request budget.
 
 ## Working rules

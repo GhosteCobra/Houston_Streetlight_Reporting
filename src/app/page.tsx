@@ -1,4 +1,2 @@
-import StreetlightApp from "@/components/report/StreetlightApp";
-export default function Home() {
-  return <StreetlightApp />;
-}
+import Welcome from "@/components/report/Welcome";
+export default function Home() { return <Welcome />; }

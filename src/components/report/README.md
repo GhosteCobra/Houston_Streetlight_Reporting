@@ -11,6 +11,8 @@ Issue selection, field errors, report summary, and status presentation.
 - `StreetlightApp.tsx` owns the photo, GPS/manual location, candidate lookup, selected pole, issue, review and browser-local draft save.
 - `StreetlightSuggestion.tsx` presents a ranked candidate and emits confirmation or a request to use the existing candidate list. It does not query data or own report state.
 - `Brand.tsx` renders the application branding.
+- `Welcome.tsx` provides desktop onboarding and the mobile preview.
+- `AddressSearch.tsx` submits an address lookup, handles ambiguous/empty/error results and emits selected coordinates. It appears only with the map.
 
 Accepting a usable photo starts GPS. The controller calls the bounded CenterPoint `PoleDataAdapter.nearby` and `rankPoles` functions. Suggestions require resident confirmation; a photo's pixels do not establish its streetlight ID. See the [Person 5 handoff](../../../docs/photo-identification-handoff.md).
 
