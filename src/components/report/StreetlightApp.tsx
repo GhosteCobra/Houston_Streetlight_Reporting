@@ -143,6 +143,7 @@ export default function StreetlightApp() {
       request.current++;
       setLocationLoading(false);
       setLocation({ ...point, accuracy, source, address: "" });
+      setStep("location");
       setPoles([]);
       setPoleLoading(true);
       setPoleError("");
@@ -519,18 +520,14 @@ export default function StreetlightApp() {
                 selected={pole?.id ?? (tab === "report" && step === "location" ? candidates[0]?.id ?? null : null)}
                 onPin={(point) => {
                   changeLocation(point);
-                  if (tab === "map") {
-                    setTab("report");
-                    setStep("location");
-                    setNotice("");
-                  }
+                  setTab("report");
+                  setStep("location");
+                  setNotice("");
                 }}
                 onPole={(id) => {
                   choosePole(id);
-                  if (tab === "map") {
-                    setTab("report");
-                    setStep("location");
-                  }
+                  setTab("report");
+                  setStep("location");
                 }}
                 interactive={true}
               />
@@ -554,14 +551,13 @@ export default function StreetlightApp() {
                         onPhoto={(next) => {
                           request.current++;
                           setPhoto(next);
-                          setPole(null);
-                          setConfirmed(false);
                           setHeading(null);
                           setUseHeading(false);
                         }}
                         onContinue={() => {
                           setStep("location");
-                          locate();
+                          // A map-first report already has a user-selected location.
+                          if (!location || location.source === "demo") locate();
                         }}
                       />
                     )}

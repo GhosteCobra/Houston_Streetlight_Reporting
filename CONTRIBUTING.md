@@ -7,7 +7,7 @@ Start with the [team docs](docs/README.md), your [role guide](docs/roles/README.
 ## Work cycle
 
 1. Create/claim an issue with scope, acceptance criteria, dependencies, and owner.
-2. Start from current develop and use a short-lived feature/, fix/, docs/, test/, or ci/ branch. If develop is absent, the maintainer must first create it from main as described in the README.
+2. Start from current develop and use a short-lived descriptive branch without a prefix, such as report-completion. If develop is absent, the maintainer must first create it from main as described in the README.
 3. Coordinate shared contract, package/lockfile, root config, and migration changes before editing. Use separate worktrees for concurrent agents.
 4. Implement the scoped task and record manual or automated checks. Avoid unrelated rewrites.
 5. Fetch and merge origin/develop into the work branch; resolve conflicts with affected owners and rerun relevant checks.

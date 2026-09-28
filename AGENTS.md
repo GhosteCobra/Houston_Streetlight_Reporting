@@ -31,7 +31,7 @@ These files are checked into the repo. No slash-command support, global installa
 - One scoped issue/task, one owner, one branch, and one worktree per agent. Use an already assigned isolated worktree if the host created it; do not create a second one unnecessarily.
 - Fetch origin. Normal implementation starts from origin/develop and returns by PR to develop. A tested develop release returns by PR to main. This preserves the team's integration process and overrides the source's origin/main default.
 - If develop does not exist, coordinate its creation from current main before normal feature work. An explicitly requested bootstrap/main update may instead branch from origin/main.
-- Prefer codex/<task>-<unique-suffix> for Codex branches; human feature/, fix/, docs/, test/, and ci/ branches remain valid. No permanent per-person branches.
+- Use descriptive lowercase branch names without prefixes, such as report-completion or satellite-map. Do not use codex/, feature/, fix/, docs/, test/, or ci/. Keep main and develop as the release and integration branches.
 - Place worktrees outside the checkout or in ignored .worktrees/. Never switch, reset, stash, clean, or edit another agent's checkout.
 - Check open PR changed files through an available GitHub connector, gh, or the GitHub UI. If unavailable, report the visibility gap. On overlap, coordinate ownership and sequence; continue independent work. Ask only when the conflicting work cannot be resolved from existing task context.
 - Worktrees do not isolate ports, cloud projects, or databases. Identify your server process and use an isolated sample database/schema. Regenerate lockfiles with the package manager when resolving conflicts.

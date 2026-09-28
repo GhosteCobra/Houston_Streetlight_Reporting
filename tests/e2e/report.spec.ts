@@ -292,3 +292,32 @@ test("Provider outage preserves photo and manual reporting without demo substitu
     page.getByText("Manual location · pole ID unknown"),
   ).toBeVisible();
 });
+
+for (const width of [1440, 390]) {
+  test(`Map-first report keeps its pole through upload and save at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    if (width < 1000) await page.getByRole("button", { name: "Map", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Service area", exact: true })).toBeEnabled({ timeout: 45000 });
+    const map = page.locator(".arcgis-map");
+    const box = await map.boundingBox();
+    await map.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+    await expect(page.getByRole("heading", { name: "Confirm the streetlight" })).toBeVisible();
+    await page.getByRole("button", { name: "Confirm streetlight", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Review report" })).toBeEnabled();
+    if (width >= 1000) {
+      await page.getByLabel("Upload streetlight image").setInputFiles(photo);
+      await expect(page.getByAltText("Your selected streetlight")).toBeVisible();
+      await expect(page.getByRole("button", { name: "Review report" })).toBeEnabled();
+    }
+    await page.getByRole("button", { name: "Review report" }).click();
+    await expect(page.getByText("TEST-102", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Save draft", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Draft saved", exact: true })).toBeVisible();
+    await expect(page.getByText("CenterPoint has not received a report.")).toBeVisible();
+    await page.reload();
+    await page.getByRole("button", { name: /^Saved/ }).click();
+    await page.getByRole("button", { name: "Review & edit" }).click();
+    await expect(page.getByText("TEST-102", { exact: true })).toBeVisible();
+  });
+}
